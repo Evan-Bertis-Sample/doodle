@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.dbclient-js": "javascript",
+        "*.compute": "hlsl",
+        "doodle_math.h": "c"
+    }
+}

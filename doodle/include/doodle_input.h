@@ -9,9 +9,9 @@ typedef enum doodle_input_type {
     DOODLE_INPUT_COUNT,            // for counting the number of types
 } doodle_input_type_t;
 
-typedef doodle_input_t {
+typedef struct doodle_input {
     doodle_input_type_t type;
-    void *data;  // pointer to the data
-}
+    void *(*read)(void);
+} doodle_input_t;
 
 #endif  // __DOODLE_INPUT_H__
