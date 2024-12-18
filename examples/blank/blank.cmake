@@ -7,6 +7,12 @@
 
 # this will have a function build_project that will be called
 
+function(use_doodle_main)
+    # returns if we are using the define DOODLE_MAIN
+    add_definitions(-DDOODLE_MAIN)
+endfunction()
+
+
 function(build_project)
     message(STATUS "Building blank example")
     # find all of the .c files in this directory,

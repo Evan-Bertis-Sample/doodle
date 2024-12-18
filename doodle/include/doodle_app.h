@@ -24,7 +24,7 @@ void doodle_app_loop(doodle_app_t *app);
 void doodle_app_teardown(doodle_app_t *app);
 
 // global variable for the app
-static doodle_app_t g_doodle_app;
+doodle_app_t g_doodle_app;
 
 #ifdef DOODLE_MAIN
 doodle_app_desc_t doodle_main(int32_t argc, char *argv[]);

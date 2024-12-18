@@ -4,8 +4,15 @@ project(${PROJECT} C)
 # Set default platform name if not provided
 set(PLATFORM_NAME "native" CACHE STRING "Platform name")
 
-# Optionally, you can list allowed platforms here
-# set(AVAILABLE_PLATFORMS native other_platform ...)
+# set the PROJECT_ROOT_DIR variable to the root directory of the project
+set(DOODLE_PROJECT_ROOT_DIR ${CMAKE_SOURCE_DIR}/${PROJECT_CMAKE_DIR})
+
+# now include the project cmakelists, found in the project directory
+# this will be expected to provide a function called "build_project"
+# this will be used to actually build the doodle project executable
+include(${DOODLE_PROJECT_ROOT_DIR}/${PROJECT_NAME}.cmake)
+
+use_doodle_main()
 
 
 message(STATUS "Building project ${PROJECT_NAME} (${PROJECT_CMAKE_DIR}) for platform ${PLATFORM_NAME}")
@@ -13,15 +20,8 @@ message(STATUS "Building project ${PROJECT_NAME} (${PROJECT_CMAKE_DIR}) for plat
 # Add the doodle library
 add_subdirectory(doodle)
 
-# set the PROJECT_ROOT_DIR variable to the root directory of the project
-set(DOODLE_PROJECT_ROOT_DIR ${CMAKE_SOURCE_DIR}/${PROJECT_CMAKE_DIR})
 
 message(STATUS "Project root directory: ${DOODLE_PROJECT_ROOT_DIR}")
-
-# now include the project cmakelists, found in the project directory
-# this will be expected to provide a function called "build_project"
-# this will be used to actually build the doodle project executable
-include(${DOODLE_PROJECT_ROOT_DIR}/${PROJECT_NAME}.cmake)
 
 # call the build_project function
 build_project()
