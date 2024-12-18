@@ -35,10 +35,6 @@ cmake -G "Unix Makefiles" -S . -B "${BUILD_DIR}" \
 # Build only the requested project target from the specified build directory
 cmake --build "${BUILD_DIR}" --target "${PROJECT_NAME}"
 
-# now actually run make on the build directory
-cd "${BUILD_DIR}"
-make 
-
 echo "Build complete. The executable should be in ${BUILD_DIR}"
 
 
