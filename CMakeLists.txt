@@ -1,12 +1,18 @@
-cmake_minimum_required(VERSION 3.10)
-project(doodle_project C)
+cmake_minimum_required(VERSION 3.13)
+project(${PROJECT} C)
 
-# Make sure we can find includes from doodle/include
-include_directories(${CMAKE_SOURCE_DIR}/doodle/include)
+# Set default platform name if not provided
+set(PLATFORM_NAME "native" CACHE STRING "Platform name")
 
-# Optionally allow specifying the platform
-# You can invoke this as: cmake -DPLATFORM_NAME=native ..
-option(PLATFORM_NAME "Platform name" "native")
+# Optionally, you can list allowed platforms here
+# set(AVAILABLE_PLATFORMS native other_platform ...)
 
-# Add the doodle library subdirectory
+
+message(STATUS "Building project ${PROJECT_NAME} (${PROJECT_CMAKE_DIR}) for platform ${PLATFORM_NAME}")
+
+# Add the doodle library
 add_subdirectory(doodle)
+
+# now add the CMAKELists.txt for the example project, passed in as an argument
+add_subdirectory(${PROJECT_CMAKE_DIR})
+

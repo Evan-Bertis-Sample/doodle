@@ -6,5 +6,8 @@ project(blank_example C)
 # you'd need a find_package or specify the path to doodle.
 # For simplicity, just assume we do a top-level build and everything is connected.
 
+message(STATUS "Building blank example")
 add_executable(blank main.c)
+
+message(STATUS "Linking doodle library")
 target_link_libraries(blank PRIVATE doodle)

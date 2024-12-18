@@ -1,4 +1,4 @@
-#include "doodle/include/doodle_math.h"
+#include "doodle_math.h"
 
 #include <float.h>
 #include <math.h>
