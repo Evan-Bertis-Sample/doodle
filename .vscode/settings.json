@@ -2,6 +2,8 @@
     "files.associations": {
         "*.dbclient-js": "javascript",
         "*.compute": "hlsl",
-        "doodle_math.h": "c"
+        "doodle_math.h": "c",
+        "doodle_platform.h": "c",
+        "doodle_app.h": "c"
     }
 }

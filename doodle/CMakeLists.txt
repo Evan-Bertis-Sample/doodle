@@ -8,6 +8,12 @@ file(GLOB DOODLE_CORE_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
 file(GLOB DOODLE_INCLUDE_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h")
 file(GLOB DOODLE_INCLUDE_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/include/*.c")
 
+# print out all of the core sources
+message(STATUS "Core sources: ${DOODLE_CORE_SOURCES}")
+message(STATUS "Core headers: ${DOODLE_CORE_HEADERS}")
+message(STATUS "Include headers: ${DOODLE_INCLUDE_HEADERS}")
+message(STATUS "Include sources: ${DOODLE_INCLUDE_SOURCES}")
+
 set(PLATFORM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/platforms/${PLATFORM_NAME})
 if(NOT EXISTS ${PLATFORM_DIR})
     message(FATAL_ERROR "Specified platform '${PLATFORM_NAME}' not found at ${PLATFORM_DIR}")

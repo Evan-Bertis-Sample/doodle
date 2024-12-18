@@ -1,11 +1,29 @@
 #include <stdio.h>
 
+#define DOODLE_MAIN
 #include <doodle_math.h>
+#include <doodle_platform.h>
+#include <doodle_app.h>
 
-int main() {
-    doodle_vec4_t vec = doodle_vec4_make(1.0f, 2.0f, 3.0f, 4.0f);
-    printf("Hello, World!\n");
+static void blank_setup(void) {
+    printf("setup\n");
+}
 
-    printf("vec: %f %f %f %f\n", vec.x, vec.y, vec.z, vec.w);
-    return 0;
+static void blank_loop(void) {
+    printf("loop\n");
+}
+
+static void blank_teardown(void) {
+    printf("teardown\n");
+}
+
+doodle_app_desc_t doodle_main(int32_t argc, char *argv[]) {
+    doodle_app_desc_t desc = {
+        .name = "blank",
+        .display_size = doodle_vec2_make(800.0f, 600.0f),
+        .setup = blank_setup,
+        .loop = blank_loop,
+        .teardown = blank_teardown,
+    };
+    return desc;
 }
