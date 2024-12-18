@@ -2,7 +2,7 @@
 
 PROJECT_NAME=$1
 if [ -z "$PROJECT_NAME" ]; then
-    echo "Usage: $0 <PROJECT_NAME> [platform_name]"
+    echo "Usage: $0 <PROJECT_NAME> [platform_name] [project_dir]"
     exit 1
 fi
 
@@ -19,7 +19,7 @@ if [ -z "$PROJECT_DIR" ]; then
     echo "No project directory specified, using default project directory: ${PROJECT_DIR}"
 fi
 
-echo "Building example: ${PROJECT_NAME} for platform: ${PLATFORM_NAME}"
+echo "Building project: ${PROJECT_NAME} for platform: ${PLATFORM_NAME}"
 echo "-----------------------------------"
 echo ""
 
@@ -32,7 +32,20 @@ cmake -G "Unix Makefiles" -S . -B "${BUILD_DIR}" \
     -DPROJECT="${PROJECT_NAME}" \
     -DPROJECT_CMAKE_DIR="${PROJECT_DIR}"
 
-# Build only the requested example target from the specified build directory
+# Build only the requested project target from the specified build directory
 cmake --build "${BUILD_DIR}" --target "${PROJECT_NAME}"
 
-echo "Build complete. The executable should be in ${BUILD_DIR}/examples/${PROJECT_NAME}/"
+# now actually run make on the build directory
+cd "${BUILD_DIR}"
+make 
+
+echo "Build complete. The executable should be in ${BUILD_DIR}"
+
+
+# now run the executable
+echo "Running the executable..."
+echo "-----------------------------------"
+echo ""
+
+# Run the executable
+"./${BUILD_DIR}/${PROJECT_NAME}.exe"

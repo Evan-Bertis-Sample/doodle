@@ -13,6 +13,17 @@ message(STATUS "Building project ${PROJECT_NAME} (${PROJECT_CMAKE_DIR}) for plat
 # Add the doodle library
 add_subdirectory(doodle)
 
-# now add the CMAKELists.txt for the example project, passed in as an argument
-add_subdirectory(${PROJECT_CMAKE_DIR})
+# set the PROJECT_ROOT_DIR variable to the root directory of the project
+set(DOODLE_PROJECT_ROOT_DIR ${CMAKE_SOURCE_DIR}/${PROJECT_CMAKE_DIR})
+
+message(STATUS "Project root directory: ${DOODLE_PROJECT_ROOT_DIR}")
+
+# now include the project cmakelists, found in the project directory
+# this will be expected to provide a function called "build_project"
+# this will be used to actually build the doodle project executable
+include(${DOODLE_PROJECT_ROOT_DIR}/${PROJECT_NAME}.cmake)
+
+# call the build_project function
+build_project()
+
 
