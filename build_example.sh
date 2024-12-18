@@ -11,15 +11,13 @@ if [ -z "$PLATFORM_NAME" ]; then
     PLATFORM_NAME="native"
 fi
 
-# Define the build directory structure
 BUILD_DIR="build/${PLATFORM_NAME}/${EXAMPLE_NAME}"
 mkdir -p "${BUILD_DIR}"
-cd "${BUILD_DIR}"
 
-# Run CMake configuration with the specified platform and example
-cmake -DPLATFORM_NAME="${PLATFORM_NAME}" -DEXAMPLE="${EXAMPLE_NAME}" ../.. 
+# Use -S and -B to clearly specify source and build directories
+cmake -B "${BUILD_DIR}" -DPLATFORM_NAME="${PLATFORM_NAME}" -DEXAMPLE="${EXAMPLE_NAME}"
 
-# Build only the requested example target
-cmake --build . --target "${EXAMPLE_NAME}"
+# Now build only the requested example target from the specified build directory
+cmake --build "${BUILD_DIR}" --target "${EXAMPLE_NAME}"
 
 echo "Build complete. The executable should be in ${BUILD_DIR}/examples/${EXAMPLE_NAME}/"
