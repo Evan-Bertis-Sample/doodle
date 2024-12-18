@@ -1,0 +1,10 @@
+cmake_minimum_required(VERSION 3.10)
+project(blank_example C)
+
+# We assume doodle is built from the top-level. If we run cmake with the top-level directory,
+# doodle should already be available. If you want to build just the example standalone, 
+# you'd need a find_package or specify the path to doodle.
+# For simplicity, just assume we do a top-level build and everything is connected.
+
+add_executable(blank main.c)
+target_link_libraries(blank PRIVATE doodle)
