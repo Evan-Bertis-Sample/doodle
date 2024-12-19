@@ -23,7 +23,12 @@ echo "Building project: ${PROJECT_NAME} for platform: ${PLATFORM_NAME}"
 echo "-----------------------------------"
 echo ""
 
-BUILD_DIR="build/${PLATFORM_NAME}/${PROJECT_NAME}"
+BUILD_DIR=$4
+if [ -z "$BUILD_DIR" ]; then
+    BUILD_DIR="build/${PLATFORM_NAME}/${PROJECT_NAME}"
+    echo "No build directory specified, using default build directory: ${BUILD_DIR}"
+fi
+
 mkdir -p "${BUILD_DIR}"
 
 # Configure using the Unix Makefiles generator
