@@ -26,4 +26,4 @@ doodle_app_desc_t doodle_main(int32_t argc, char *argv[]) {
         .teardown = blank_teardown,
     };
     return desc;
-}
+}   

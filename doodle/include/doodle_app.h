@@ -4,12 +4,15 @@
 #include "doodle_math.h"
 #include "doodle_platform.h"
 
+// forward declaration
+typedef struct doodle_app doodle_app_t;
+
 typedef struct doodle_app_desc {
     const char *name;
     const doodle_vec2_t display_size;
-    void (*setup)(void);
-    void (*loop)(void);
-    void (*teardown)(void);
+    void (*setup)(doodle_app_t *app);
+    void (*loop)(doodle_app_t *app);
+    void (*teardown)(doodle_app_t *app);
 } doodle_app_desc_t;
 
 typedef struct doodle_app {
@@ -23,14 +26,8 @@ void doodle_app_init(doodle_app_t *app);
 void doodle_app_loop(doodle_app_t *app);
 void doodle_app_teardown(doodle_app_t *app);
 
-// global variable for the app
-doodle_app_t g_doodle_app;
-
-#ifdef DOODLE_MAIN
+// This is a specific implementation, which will describe the main function
 doodle_app_desc_t doodle_main(int32_t argc, char *argv[]);
 
-int main(int32_t argc, char *argv[]);
-
-#endif  // DOODLE_MAIN
 
 #endif  // __DOODLE_APP_H__

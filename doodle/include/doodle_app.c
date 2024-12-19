@@ -32,27 +32,3 @@ void doodle_app_teardown(doodle_app_t *app) {
 void doodle_app_loop(doodle_app_t *app) {
     app->desc.loop();
 }
-
-#ifdef DOODLE_MAIN
-
-static void exit_handler(void *ctx) {
-    doodle_app_teardown(&g_doodle_app);
-    doodle_platform_t platform = g_doodle_app.platform;
-    platform.shutdown(platform.context);
-}
-
-int main(int32_t argc, char *argv[]) {
-    doodle_app_desc_t desc = doodle_main(argc, argv);
-    doodle_platform_t platform = doodle_platform_create(NULL);
-    g_doodle_app = doodle_app_create(desc, platform);
-    doodle_app_init(&g_doodle_app);
-        // attach a few interrupt handlers to handle application quitting
-        // and other things
-        g_doodle_app.platform.attach_exit_interrupts(g_doodle_app.platform.context, exit_handler);
-
-    while (1) {
-        doodle_app_loop(&g_doodle_app);
-    }
-}
-
-#endif  // DOODLE_MAIN

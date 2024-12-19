@@ -53,5 +53,24 @@ target_include_directories(doodle PUBLIC
     ${PLATFORM_DIR}
 )
 
+
+# In the platform directory, we will be expecting a main.c file
+# This will be the entry point for the application! 
+# Why do we do this? Because different platforms may have different entry points.
+# Most specifically, arduino sketches have a different entry point than a normal C program.
+
+# Check if there's a platform-specific main.c file
+set(PLATFORM_MAIN_FILE ${PLATFORM_DIR}/main.c)
+if(EXISTS ${PLATFORM_MAIN_FILE})
+    message(STATUS "Using platform-specific main.c from ${PLATFORM_MAIN_FILE}")
+    target_sources(doodle PRIVATE ${PLATFORM_MAIN_FILE})
+else()
+    message(STATUS "No platform-specific main.c found, using default main.c from ${CMAKE_CURRENT_SOURCE_DIR}")
+    target_sources(doodle PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/main.c)
+endif()
+
+# now this main file will be the executable for the project
+add_executable(${PROJECT_NAME} ${PLATFORM_MAIN_FILE})
+
 # If the platform.cmake sets additional properties (like target_link_libraries calls),
 # they will already be in effect after being included.

@@ -20,7 +20,7 @@ function(build_project)
 
     message(STATUS "Adding blank.c to the project, using path ${DOODLE_PROJECT_ROOT_DIR}/blank.c")
 
-    add_executable(blank ${DOODLE_PROJECT_ROOT_DIR}/blank.c)
+    add_executable(${PROJECT_NAME}
 
     message(STATUS "Linking doodle library")
     target_link_libraries(blank PRIVATE doodle)
