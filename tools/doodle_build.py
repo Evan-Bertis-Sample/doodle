@@ -3,6 +3,7 @@
 import os
 from enum import Enum
 import argparse
+import subprocess
 
 DOODLE_ROOT = "doodle"
 DOODLE_PLATFORM_DIR = DOODLE_ROOT + "/platforms"
@@ -46,9 +47,17 @@ class DoodleBuildPlatform:
         # the standard build method is to just run the build script
         # the build script expects:
         # <PROJECT_NAME> <PLATFORM_NAME> <PROJECT_DIR> <OUTPUT_DIR>
-        command = f"./{DOODLE_BUILD_BASH_SCRIPT} {project_name} {self.name} {project_path} {self.get_output_dir(project_name)}"
+        command = f"{DOODLE_BUILD_BASH_SCRIPT} {project_name} {self.name} {project_path} {self.get_output_dir(project_name)}"
+        print(command)
 
-        os.system(command)
+        # cd into the directory that this doodle_build.py file is in
+        # and run the build script
+        tools_dir = os.path.dirname(os.path.realpath(__file__))
+
+        this_stdout = subprocess.PIPE
+        result = subprocess.call(command, shell=True, cwd=tools_dir, stdout=this_stdout)
+        print(result)
+
 
     def __build_platform_custom(self, project_path: str, project_name: str):
         # there should be a build script in the platform directory
@@ -60,6 +69,10 @@ class DoodleBuildPlatform:
         command = (
             f"python {self.path}/doodle.py {project_name} {self.name} {project_path}"
         )
+        print(command)
+
+        # cd into the directory that this doodle_build.py file is in
+        # and run the build script
         os.system(command)
 
 
@@ -99,7 +112,7 @@ def main():
     for p in platforms:
         print("  " + p.name + " (" + p.type.name + ")")
 
-
+    print("")
     # find the platform
     platform = None
     for p in platforms:
@@ -110,6 +123,8 @@ def main():
     if platform is None:
         print("Platform not found")
         return
+    
+    print(f"Building project {args.project_name} with platform {args.platform_name} using {platform.type.name} method")
 
     platform.build_platform(args.project_dir, args.project_name)
 

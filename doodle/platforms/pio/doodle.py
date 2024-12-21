@@ -27,6 +27,10 @@ def main():
     # the project directory is the directory of the project
     ini_file = get_pio_ini(args.project_dir)
 
+    # print the contents of the ini file
+    with open(ini_file, "r") as f:
+        print(f.read())
+
 
 if __name__ == "__main__":
     main()
