@@ -12,8 +12,6 @@ set(DOODLE_PROJECT_ROOT_DIR ${CMAKE_SOURCE_DIR}/${PROJECT_CMAKE_DIR})
 # this will be used to actually build the doodle project executable
 include(${DOODLE_PROJECT_ROOT_DIR}/${PROJECT_NAME}.cmake)
 
-use_doodle_main()
-
 message(STATUS "Building project ${PROJECT_NAME} (${PROJECT_CMAKE_DIR}) for platform ${PLATFORM_NAME}")
 
 # Add the doodle library

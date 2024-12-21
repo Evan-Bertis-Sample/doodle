@@ -96,13 +96,14 @@ def get_platforms():
 
     return platforms
 
+def register_subparser(subparser):
+    subparser.add_argument("project_name", type=str, help="the name of the project")
+    subparser.add_argument("platform_name", type=str, help="the name of the platform")
+    subparser.add_argument("project_dir", type=str, help="the directory of the project")
 
 def main():
-    # expects <PROJECT_NAME> [platform_name] [project_dir]
     parser = argparse.ArgumentParser(description="Build a project")
-    parser.add_argument("project_name", type=str, help="the name of the project")
-    parser.add_argument("platform_name", type=str, help="the name of the platform")
-    parser.add_argument("project_dir", type=str, help="the directory of the project")
+    register_subparser(parser)
     args = parser.parse_args()
 
     # get the platforms
@@ -127,6 +128,3 @@ def main():
     print(f"Building project {args.project_name} with platform {args.platform_name} using {platform.type.name} method")
 
     platform.build_platform(args.project_dir, args.project_name)
-
-if __name__ == "__main__":
-    main()

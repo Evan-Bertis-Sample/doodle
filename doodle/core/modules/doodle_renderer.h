@@ -33,6 +33,7 @@ typedef struct doodle_module_renderer {
     void (*draw_rect)(struct doodle_module_renderer *renderer, uint32_t x, uint32_t y, uint32_t width, uint32_t height, doodle_color_t color);
     void (*draw_circle)(struct doodle_module_renderer *renderer, uint32_t x, uint32_t y, uint32_t radius, doodle_color_t color);
     void (*draw_text)(struct doodle_module_renderer *renderer, uint32_t x, uint32_t y, const char *text, doodle_color_t color);
+
 } doodle_module_renderer_t;
 
 #endif  // __DOODLE_DISPLAY_H__
