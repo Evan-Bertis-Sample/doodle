@@ -22,13 +22,13 @@ doodle_app_t doodle_app_create(doodle_app_desc_t desc, doodle_platform_t platfor
 }
 
 void doodle_app_init(doodle_app_t *app) {
-    app->desc.setup();
+    app->desc.setup(app);
 }
 
 void doodle_app_teardown(doodle_app_t *app) {
-    app->desc.teardown();
+    app->desc.teardown(app);
 }
 
 void doodle_app_loop(doodle_app_t *app) {
-    app->desc.loop();
+    app->desc.loop(app);
 }
