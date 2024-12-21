@@ -14,7 +14,6 @@ include(${DOODLE_PROJECT_ROOT_DIR}/${PROJECT_NAME}.cmake)
 
 use_doodle_main()
 
-
 message(STATUS "Building project ${PROJECT_NAME} (${PROJECT_CMAKE_DIR}) for platform ${PLATFORM_NAME}")
 
 # Add the doodle library
