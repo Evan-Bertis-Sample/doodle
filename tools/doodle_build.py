@@ -4,6 +4,7 @@ import os
 from enum import Enum
 import argparse
 import subprocess
+import inifile
 
 DOODLE_ROOT = "doodle"
 DOODLE_PLATFORM_DIR = DOODLE_ROOT + "/platforms"
@@ -47,17 +48,10 @@ class DoodleBuildPlatform:
         # the standard build method is to just run the build script
         # the build script expects:
         # <PROJECT_NAME> <PLATFORM_NAME> <PROJECT_DIR> <OUTPUT_DIR>
-        command = f"{DOODLE_BUILD_BASH_SCRIPT} {project_name} {self.name} {project_path} {self.get_output_dir(project_name)}"
-        print(command)
 
-        # cd into the directory that this doodle_build.py file is in
-        # and run the build script
-        tools_dir = os.path.dirname(os.path.realpath(__file__))
+        
 
-        this_stdout = subprocess.PIPE
-        result = subprocess.call(command, shell=True, cwd=tools_dir, stdout=this_stdout)
-        print(result)
-
+    
 
     def __build_platform_custom(self, project_path: str, project_name: str):
         # there should be a build script in the platform directory
@@ -69,11 +63,8 @@ class DoodleBuildPlatform:
         command = (
             f"python {self.path}/doodle.py {project_name} {self.name} {project_path}"
         )
-        print(command)
 
-        # cd into the directory that this doodle_build.py file is in
-        # and run the build script
-        os.system(command)
+
 
 
 def get_platforms():
@@ -96,15 +87,17 @@ def get_platforms():
 
     return platforms
 
+
 def register_subparser(subparser):
     subparser.add_argument("project_name", type=str, help="the name of the project")
     subparser.add_argument("platform_name", type=str, help="the name of the platform")
     subparser.add_argument("project_dir", type=str, help="the directory of the project")
 
-def main():
-    parser = argparse.ArgumentParser(description="Build a project")
-    register_subparser(parser)
-    args = parser.parse_args()
+
+def main(args):
+    platform_name = args.platform_name
+    project_name = args.project_name
+    project_dir = args.project_dir
 
     # get the platforms
     platforms = get_platforms()
@@ -124,7 +117,9 @@ def main():
     if platform is None:
         print("Platform not found")
         return
-    
-    print(f"Building project {args.project_name} with platform {args.platform_name} using {platform.type.name} method")
+
+    print(
+        f"Building project {args.project_name} with platform {args.platform_name} using {platform.type.name} method"
+    )
 
     platform.build_platform(args.project_dir, args.project_name)

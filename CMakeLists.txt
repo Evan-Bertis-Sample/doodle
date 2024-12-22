@@ -10,7 +10,7 @@ set(DOODLE_PROJECT_ROOT_DIR ${CMAKE_SOURCE_DIR}/${PROJECT_CMAKE_DIR})
 # now include the project cmakelists, found in the project directory
 # this will be expected to provide a function called "build_project"
 # this will be used to actually build the doodle project executable
-include(${DOODLE_PROJECT_ROOT_DIR}/${PROJECT_NAME}.cmake)
+include(${DOODLE_PROJECT_ROOT_DIR}/doodle.cmake)
 
 message(STATUS "Building project ${PROJECT_NAME} (${PROJECT_CMAKE_DIR}) for platform ${PLATFORM_NAME}")
 
