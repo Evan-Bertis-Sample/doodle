@@ -36,6 +36,9 @@ def main():
         # Convert 'doodle_foo.py' → subcommand name 'foo'
         subcommand_name = tool_name.replace("doodle_", "")
 
+        # also take only the name of the tool, not the path/to/the/tool
+        subcommand_name = subcommand_name.split(os.path.sep)[-1]
+
         # Build module path: 'doodle.doodle_foo'
         module_path = tool_name.replace(os.path.sep, ".")
         print(f"Importing module: {module_path}")
