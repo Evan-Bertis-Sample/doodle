@@ -7,15 +7,22 @@ import importlib
 
 TOOLS_FOLDER = "tools"
 
+
 def main():
     # Path to the 'doodle' directory
     doodle_dir = os.path.join(os.path.dirname(__file__), TOOLS_FOLDER)
 
     # Collect all doodle_*.py files
     tool_files = []
-    for filename in os.listdir(doodle_dir):
-        if filename.startswith("doodle_") and filename.endswith(".py"):
-            tool_files.append(filename)
+    # walk recursively through the doodle directory to find all the tools
+    # tools are python files that start with doodle_
+    for root, _, files in os.walk(doodle_dir):
+        for file in files:
+            if file.startswith("doodle_") and file.endswith(".py"):
+                # get the full path to the file relative to the location of this file
+                tool_path = os.path.relpath(os.path.join(root, file), doodle_dir)
+                tool_path = TOOLS_FOLDER + os.path.sep + tool_path
+                tool_files.append(tool_path)
 
     parser = argparse.ArgumentParser(description="Dispatcher for doodle_ sub-tools.")
     subparsers = parser.add_subparsers(dest="tool", help="Sub-commands")
@@ -30,7 +37,8 @@ def main():
         subcommand_name = tool_name.replace("doodle_", "")
 
         # Build module path: 'doodle.doodle_foo'
-        module_path = f"{TOOLS_FOLDER}.{tool_name}"
+        module_path = tool_name.replace(os.path.sep, ".")
+        print(f"Importing module: {module_path}")
 
         # Import the module
         module = importlib.import_module(module_path)
