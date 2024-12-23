@@ -5,7 +5,7 @@ from enum import Enum
 import argparse
 import subprocess
 
-from tools.build.build_util import DoodleBuildUtil
+from tools.doodle_build.build_util import DoodleBuildUtil
 
 DOODLE_BUILD_BASH_SCRIPT = "doodle_run.sh"
 
@@ -26,14 +26,14 @@ def main(args):
     platforms = DoodleBuildUtil.get_platforms()
 
     print("Found platforms:")
-    for p in platforms:
-        print("  " + p.name + " (" + p.type.name + ")")
+    for platform_name, platform in platforms.items():
+        print(f"{platform_name} ({platform.build_info.build_type.name})")
 
     print("")
     # find the platform
     platform = None
-    for p in platforms:
-        if p.name == args.platform_name:
+    for platform_name, p in platforms.items():
+        if platform_name.lower() == args.platform_name.lower():
             platform = p
             break
 

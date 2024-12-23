@@ -5,8 +5,8 @@ from typing import List
 from tools.tool_utils import DoodleModuleType
 
 class DoodleBuildPlatformType(Enum):
-    STANDARD_BUILD = 1  # for just using the method desscribed in the platform
-    CUSTOM_BUILD = 2  # for using a custom build script, using python
+    CMAKE_BUILD = 1  # for just using the method desscribed in the platform
+    PYTHON_BUILD = 2  # for using a custom build script, using python
 
 
 class DoodleBuildPlatformBuildInfo:
@@ -22,14 +22,23 @@ class DoodleBuildPlatformInfo:
         self.modules = modules
 
 class DoodleBuildPlatform:
+    @staticmethod
+    def get_build_type_from_str(build_type_str: str) -> DoodleBuildPlatformType:
+        type_names = [e.name for e in DoodleBuildPlatformType]
+        for t in type_names:
+            if build_type_str.lower() in t.lower():
+                return DoodleBuildPlatformType[t]
+            
+        return None
+
     def __init__(self, build_info: DoodleBuildPlatformBuildInfo, platform_info: DoodleBuildPlatformInfo):
         self.build_info = build_info
         self.platform_info = platform_info
 
     def build_platform(self, project_path: str, project_name: str):
-        if self.build_info.type == DoodleBuildPlatformType.STANDARD_BUILD:
+        if self.build_info.type == DoodleBuildPlatformType.CMAKE_BUILD:
             self.__build_platform_standard(project_path, project_name)
-        elif self.build_info.type == DoodleBuildPlatformType.CUSTOM_BUILD:
+        elif self.build_info.type == DoodleBuildPlatformType.PYTHON_BUILD:
             self.__build_platform_custom(project_path, project_name)
 
     def __build_platform_standard(self, project_path: str, project_name: str):

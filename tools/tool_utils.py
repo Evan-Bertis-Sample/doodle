@@ -20,13 +20,13 @@ class DoodleToolUtil:
     def get_doodle_dir():
         # get where this file was executed
         current_dir = os.getcwd()
-        return current_dir / "doodle"
-
+        return current_dir + os.path.sep + "doodle"
+    
     @staticmethod
     def get_doodle_work_dir():
         # get where this file was executed
         current_dir = os.getcwd()
-        return current_dir / ".doodle"
+        return current_dir + os.path.sep + ".doodle"
 
     @staticmethod
     def get_doodle_module_type_str(module_type: DoodleModuleType):
@@ -41,5 +41,5 @@ class DoodleToolUtil:
         for t in list_of_types:
             if t.lower() == module_type_str.lower():
                 return DoodleModuleType[t]
-            
+
         return None

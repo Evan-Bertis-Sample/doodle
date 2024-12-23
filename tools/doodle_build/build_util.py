@@ -2,11 +2,11 @@
 
 import os
 import subprocess
-import inifile
+import configparser
 
 from tools.tool_utils import DoodleToolUtil
 
-from tools.build.platform import (
+from tools.doodle_build.platform import (
     DoodleBuildPlatform,
     DoodleBuildPlatformType,
     DoodleBuildPlatformBuildInfo,
@@ -27,16 +27,15 @@ class DoodleBuildUtil:
 
     @staticmethod
     def build_platform_from_ini(ini_file_path: str) -> DoodleBuildPlatform:
-        ini_file = inifile.IniFile(ini_file_path)
+        ini_file = configparser.ConfigParser()
+        ini_file.read(ini_file_path)
         # in the build section, there should be a type and build_src key
-        build_section = ini_file.get_section("build")
-
-        if build_section is None:
+        if not ini_file.has_section("build"):
             return None
 
-        build_src = build_section.get("build_src")
-        build_type = DoodleToolUtil.get_doodle_module_type_from_str(
-            build_section.get("type")
+        build_src = ini_file.get("build", "build_src")
+        build_type = DoodleBuildPlatform.get_build_type_from_str(
+            ini_file.get("build", "type")
         )
 
         if build_type is None:
@@ -44,26 +43,29 @@ class DoodleBuildUtil:
 
         if build_src is None or build_src == "":
             # default to doodle.py or doodle.cmake
-            if build_type == DoodleBuildPlatformType.CUSTOM_BUILD:
+            if build_type == DoodleBuildPlatformType.PYTHON_BUILD:
                 build_src = "doodle.py"
             else:
                 build_src = "doodle.cmake"
 
         # now we should get the supported modules, platform name, version and main
-        platform_section = ini_file.get_section("platform")
-        if platform_section is None:
+        if not ini_file.has_section("platform"):
             return None
 
-        platform_name = platform_section.get("platform")
-        platform_version = platform_section.get("version") or "N/A"
-        platform_main = platform_section.get("main") or "main.c"
-        platform_modules_raw = platform_section.get("modules") or ""
+        platform_name = ini_file.get("platform", "platform")
+        platform_version = ini_file.get("platform", "version")
+        platform_main = ini_file.get("platform", "main")
+        platform_modules_raw = ini_file.get("platform", "modules")
         platform_modules = platform_modules_raw.split(",")
         platform_modules = [
             DoodleToolUtil.get_doodle_module_type_from_str(m) for m in platform_modules
         ]
         # remove any None values
         platform_modules = [m for m in platform_modules if m is not None]
+
+        if platform_name is None or platform_name == "":
+            return None
+    
 
         return DoodleBuildPlatform(
             DoodleBuildPlatformBuildInfo(build_src, build_type),
@@ -75,11 +77,15 @@ class DoodleBuildUtil:
     @staticmethod
     def get_platforms() -> dict[str, DoodleBuildPlatform]:
         platforms = {}
-        for platform in os.listdir(DoodleToolUtil.get_doodle_dir() / "platforms"):
-            platform_ini = DoodleToolUtil.get_doodle_dir() / "platforms" / platform / "doodle_platform.ini"
-            if not platform_ini.exists():
+        for platform in os.listdir(DoodleToolUtil.get_doodle_dir() + os.path.sep + "platforms"):
+            platform_ini = os.path.sep.join([DoodleToolUtil.get_doodle_dir(), "platforms", platform, "doodle_platform.ini"])
+            if not os.path.exists(platform_ini):
                 continue
 
             platform = DoodleBuildUtil.build_platform_from_ini(platform_ini)
-            platforms[platform.name] = platform
+
+            if platform is None:
+                continue
+
+            platforms[platform.platform_info.name] = platform
         return platforms
