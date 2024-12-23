@@ -3,6 +3,8 @@ from typing import List
 import os
 
 from tools.tool_utils import DoodleModuleType, DoodleToolUtil
+import subprocess
+import sys
 
 DOODLE_BUILD_BASH_SCRIPT = "doodle_build/doodle_run.sh"
 
@@ -37,6 +39,14 @@ class DoodleBuildPlatform:
                 return DoodleBuildPlatformType[t]
 
         return None
+    
+    @staticmethod
+    def get_build_dir(platform_name: str, project_name: str):
+        work_dir = DoodleToolUtil.get_doodle_work_dir()
+        build_dir = os.path.join(work_dir, "build", project_name, platform_name)
+        # if it doesn't exist, create it
+        os.makedirs(build_dir, exist_ok=True)
+        return build_dir
 
     def __init__(
         self,
@@ -53,18 +63,65 @@ class DoodleBuildPlatform:
             self.__build_platform_custom(project_path, project_name)
 
     def __build_platform_standard(self, project_path: str, project_name: str):
-        # the standard build method is to just run the build script
-        # the build script expects:
-        # <PROJECT_NAME> <PLATFORM_NAME> <PROJECT_DIR> <OUTPUT_DIR>
-        bash_script = (
-            DoodleToolUtil.get_doodle_tool_dir()
-            + os.path.sep
-            + DOODLE_BUILD_BASH_SCRIPT
-        )
+        print("Doodle Build System (PYTHON BUILD)")
 
-        command = f"{bash_script} {project_name} {self.platform_info.name} {project_path}"
+        # 1. Figure out platform_name (default = "native")
+        platform_name = self.platform_info.name if self.platform_info.name else "native"
+        if not self.platform_info.name:
+            print(f"No platform specified, using default: {platform_name}")
 
-        DoodleToolUtil.execute_cli_command(command)
+        # 2. Figure out the project directory
+        # Check if the project directory actually exists
+        project_dir = os.path.abspath(project_path)
+        if not os.path.exists(project_dir):
+            print(f"Error: Project directory does not exist: {project_dir}")
+            return
+
+        # 3. Figure out build directory
+        build_dir = DoodleBuildPlatform.get_build_dir(platform_name, project_name)
+
+        # 4. Run CMake configure
+        cmake_command = [
+            "cmake",
+            "-G", "Unix Makefiles",
+            "-S", ".",  # Assume the current directory is the root CMakeLists.txt
+            "-B", build_dir,
+            f"-DPLATFORM_NAME={platform_name}",
+            f"-DPROJECT={project_name}",
+            f"-DPROJECT_CMAKE_DIR={project_dir}",
+        ]
+        try:
+            subprocess.run(cmake_command, check=True)
+        except subprocess.CalledProcessError as e:
+            print(f"Error configuring with CMake: {e}")
+            return
+
+        # 5. Run the build for the requested project target
+        build_command = [
+            "cmake",
+            "--build", build_dir,
+            "--target", project_name
+        ]
+        try:
+            subprocess.run(build_command, check=True)
+        except subprocess.CalledProcessError as e:
+            print(f"Error building project: {e}")
+            return
+
+        print(f"Build complete. The executable should be in {build_dir}")
+        print("Running the executable...")
+        print("-----------------------------------\n")
+
+        # 6. Run the generated executable. 
+        #    On Windows, you may have a .exe. On Unix-like systems, you often won't.
+        #    Adjust accordingly if your platform doesn't use ".exe".
+        exe_path = os.path.join(build_dir, f"{project_name}.exe")
+        try:
+            subprocess.run([exe_path], check=True)
+        except FileNotFoundError:
+            print(f"Executable not found: {exe_path}")
+        except subprocess.CalledProcessError as e:
+            print(f"Error running executable: {e}")
 
     def __build_platform_custom(self, project_path: str, project_name: str):
         # there should be a build script in the platform directory

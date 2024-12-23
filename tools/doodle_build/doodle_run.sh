@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+echo "Doodle Build System"
+
 PROJECT_NAME=$1
 if [ -z "$PROJECT_NAME" ]; then
     echo "Usage: $0 <PROJECT_NAME> [platform_name] [project_dir]"

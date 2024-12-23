@@ -52,6 +52,14 @@ class DoodleToolUtil:
         return None
 
     @staticmethod
-    def execute_cli_command(command: str):
-        print(command)
-        subprocess.run(command, shell=True)
+    def execute_bash_script(script_path: str, args: list):
+        # check if the script exists
+        if not os.path.exists(script_path):
+            print(f"Error: The script {script_path} does not exist")
+            return
+        
+        print(f"Executing script: {script_path}")
+        print(f"Arguments: {args}")
+
+        # execute the script
+        os.exec([script_path] + args, shell=True)
