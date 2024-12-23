@@ -36,9 +36,9 @@ class DoodleBuildPlatform:
         self.platform_info = platform_info
 
     def build_platform(self, project_path: str, project_name: str):
-        if self.build_info.type == DoodleBuildPlatformType.CMAKE_BUILD:
+        if self.build_info.build_type == DoodleBuildPlatformType.CMAKE_BUILD:
             self.__build_platform_standard(project_path, project_name)
-        elif self.build_info.type == DoodleBuildPlatformType.PYTHON_BUILD:
+        elif self.build_info.build_type == DoodleBuildPlatformType.PYTHON_BUILD:
             self.__build_platform_custom(project_path, project_name)
 
     def __build_platform_standard(self, project_path: str, project_name: str):
