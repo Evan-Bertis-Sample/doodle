@@ -34,6 +34,12 @@ class DoodleToolUtil:
         # get where this file was executed
         current_dir = os.getcwd()
         return current_dir + os.path.sep + ".doodle"
+    
+    @staticmethod
+    def get_doodle_parent_dir():
+        # get where this file was executed
+        current_dir = os.getcwd()
+        return current_dir
 
     @staticmethod
     def get_doodle_module_type_str(module_type: DoodleModuleType):

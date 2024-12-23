@@ -80,6 +80,10 @@ class DoodleBuildPlatform:
         # 3. Figure out build directory
         build_dir = DoodleBuildPlatform.get_build_dir(platform_name, project_name)
 
+        rel_project_dir = os.path.relpath(project_dir, DoodleToolUtil.get_doodle_parent_dir())
+        print(f"Building project {project_name} in {project_dir} with platform {platform_name}")
+        print("Rel project dir: ", rel_project_dir)
+
         # 4. Run CMake configure
         cmake_command = [
             "cmake",
@@ -88,7 +92,7 @@ class DoodleBuildPlatform:
             "-B", build_dir,
             f"-DPLATFORM_NAME={platform_name}",
             f"-DPROJECT={project_name}",
-            f"-DPROJECT_CMAKE_DIR={project_dir}",
+            f"-DPROJECT_CMAKE_DIR={rel_project_dir}",
         ]
         try:
             subprocess.run(cmake_command, check=True)
