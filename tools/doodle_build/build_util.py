@@ -20,11 +20,6 @@ class DoodleBuildUtil:
     def get_build_output_dir(platform_name: str, project_name: str):
         work_dir = DoodleBuildUtil.get_doodle_work_dir()
         return work_dir / "build" / project_name / platform_name
-
-    @staticmethod
-    def execute_cli_command(command: str):
-        subprocess.run(command, shell=True)
-
     @staticmethod
     def build_platform_from_ini(ini_file_path: str) -> DoodleBuildPlatform:
         ini_file = configparser.ConfigParser()

@@ -2,6 +2,8 @@
 
 import os
 import enum
+import subprocess
+
 
 class DoodleModuleType(enum.Enum):
     INPUT = 1
@@ -21,7 +23,12 @@ class DoodleToolUtil:
         # get where this file was executed
         current_dir = os.getcwd()
         return current_dir + os.path.sep + "doodle"
-    
+
+    @staticmethod
+    def get_doodle_tool_dir():
+        current_dir = os.getcwd()
+        return current_dir + os.path.sep + "tools"
+
     @staticmethod
     def get_doodle_work_dir():
         # get where this file was executed
@@ -43,3 +50,8 @@ class DoodleToolUtil:
                 return DoodleModuleType[t]
 
         return None
+
+    @staticmethod
+    def execute_cli_command(command: str):
+        print(command)
+        subprocess.run(command, shell=True)
