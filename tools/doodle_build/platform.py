@@ -124,6 +124,7 @@ class DoodleBuildPlatform:
         #    On Windows, you may have a .exe. On Unix-like systems, you often won't.
         #    Adjust accordingly if your platform doesn't use ".exe".
         exe_path = os.path.join(build_dir, f"{project_name}.exe")
+        print(f"Running executable: {exe_path}")
         try:
             subprocess.run([exe_path], check=True)
         except FileNotFoundError:

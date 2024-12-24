@@ -3,7 +3,7 @@
 
 #include <doodle/core/doodle_modules.h>
 
-typedef void* doodle_platform_context_t;
+typedef void *doodle_platform_context_t;
 
 typedef struct doodle_platform {
     doodle_platform_context_t context;
@@ -12,7 +12,7 @@ typedef struct doodle_platform {
     void (*init)(doodle_platform_context_t context);
     void (*shutdown)(doodle_platform_context_t context);
     void (*update)(doodle_platform_context_t context);
-    void (*attach_exit_interrupts)(doodle_platform_context_t context, void (*exit_handler)(void*));
+    void (*attach_exit_interrupts)(doodle_platform_context_t context, void (*exit_handler)(void *));
 } doodle_platform_t;
 
 
@@ -20,8 +20,6 @@ typedef struct doodle_platform {
  *                           doodle_platform functions!
  * In order to create a platform, you must implement these two functions, at least.
  *------------------------------------------------------------------------**/
-
-
 
 /// @brief Creates a new doodle platform. By default, this is not implemented my the doodle core.
 /// @note You must implement this function in your platform-specific code.
