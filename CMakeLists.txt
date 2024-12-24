@@ -19,23 +19,29 @@ message(STATUS "Building project ${PROJECT_NAME} (${PROJECT_CMAKE_DIR}) for plat
 # this will be the final executable
 add_executable(${PROJECT_NAME})
 
-# set the minimum required CMake version
 cmake_minimum_required(VERSION 3.13)
 
+set(DOODLE_PARENT_DIR ${CMAKE_SOURCE_DIR})
+
+message(STATUS "DOODLE_PARENT_DIR: ${DOODLE_PARENT_DIR}")
+
 # Collect all core .c and .h files recursively, through the core directory
-file(GLOB_RECURSE DOODLE_CORE_SOURCES "${CMAKE_SOURCE_DIR}/doodle/core/*.c")
-file(GLOB_RECURSE DOODLE_CORE_HEADERS "${CMAKE_SOURCE_DIR}/doodle/core/*.h")
+file(GLOB_RECURSE DOODLE_CORE_SOURCES "${DOODLE_PARENT_DIR}/doodle/core/*.c")
+file(GLOB_RECURSE DOODLE_CORE_HEADERS "${DOODLE_PARENT_DIR}/doodle/core/*.h")
+
 
 # print all of the relative paths to the core header files
 message(STATUS "DOODLE_CORE_HEADERS: ${DOODLE_CORE_HEADERS}")
 
-set(PLATFORM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/platforms/${PLATFORM_NAME})
+set(PLATFORM_ROOT_DIR ${DOODLE_PARENT_DIR}/doodle/platforms)
+
+set(PLATFORM_DIR ${PLATFORM_ROOT_DIR}/${PLATFORM_NAME})
 if(NOT EXISTS ${PLATFORM_DIR})
     message(FATAL_ERROR "Specified platform '${PLATFORM_NAME}' not found at ${PLATFORM_DIR}")
 endif()
 
 # Check if there's a platform-specific CMake configuration file
-set(PLATFORM_CMAKE_FILE ${PLATFORM_DIR}/platform.cmake)
+set(PLATFORM_CMAKE_FILE ${PLATFORM_DIR}/${PLATFORM_NAME}.cmake)
 if(EXISTS ${PLATFORM_CMAKE_FILE})
     # The platform.cmake file should define at least:
     #   PLATFORM_SOURCES (list of .c files)
@@ -98,11 +104,9 @@ endif()
 # now add the platform main file to the sources for the PROJECT_NAME executable
 target_sources(${PROJECT_NAME} PRIVATE ${PLATFORM_MAIN_FILE})
 
+
 # If the platform.cmake sets additional properties (like target_link_libraries calls),
 # they will already be in effect after being included.
-
-
-
 message(STATUS "Project root directory: ${DOODLE_PROJECT_ROOT_DIR}")
 
 # call the build_project function

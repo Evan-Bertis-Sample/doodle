@@ -8,8 +8,8 @@
  *------------------------------------------------------------------------**/
 
 
-#include <doodle_app.h>
-#include <doodle_platform.h>
+#include <doodle/core/doodle_app.h>
+#include <doodle/core/doodle_platform.h>
 
 doodle_app_t g_doodle_app;
 
