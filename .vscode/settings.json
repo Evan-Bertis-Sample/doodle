@@ -1,9 +1,11 @@
 {
     "files.associations": {
+        "*.ndjson": "jsonl",
         "*.dbclient-js": "javascript",
         "*.compute": "hlsl",
         "doodle_math.h": "c",
         "doodle_platform.h": "c",
-        "doodle_app.h": "c"
+        "doodle_app.h": "c",
+        "stdio.h": "c"
     }
 }

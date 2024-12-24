@@ -1,7 +1,7 @@
 #ifndef __DOODLE_APP_H__
 #define __DOODLE_APP_H__
 
-#include "doodle/core/util/doodle_math.h"
+#include <doodle/core/util/doodle_math.h>
 #include "doodle/core/doodle_platform.h"
 
 // forward declaration

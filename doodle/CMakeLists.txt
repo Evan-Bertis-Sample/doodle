@@ -1,10 +1,17 @@
 # set the minimum required CMake version
 cmake_minimum_required(VERSION 3.13)
 
-# Collect all core .c and .h files recursively, through the core directory
-file(GLOB_RECURSE DOODLE_CORE_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/core/*.c")
-file(GLOB_RECURSE DOODLE_CORE_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/core/*.h")
+set(DOODLE_PARENT_DIR ${CMAKE_SOURCE_DIR})
 
+message(STATUS "DOODLE_PARENT_DIR: ${DOODLE_PARENT_DIR}")
+
+# Collect all core .c and .h files recursively, through the core directory
+file(GLOB_RECURSE DOODLE_CORE_SOURCES "${DOODLE_PARENT_DIR}/doodle/core/*.c")
+file(GLOB_RECURSE DOODLE_CORE_HEADERS "${DOODLE_PARENT_DIR}/doodle/core/*.h")
+
+
+# print all of the relative paths to the core header files
+message(STATUS "DOODLE_CORE_HEADERS: ${DOODLE_CORE_HEADERS}")
 
 set(PLATFORM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/platforms/${PLATFORM_NAME})
 if(NOT EXISTS ${PLATFORM_DIR})
