@@ -1,10 +1,10 @@
 # set the minimum required CMake version
 cmake_minimum_required(VERSION 3.13)
 
-
 # Collect all core .c and .h files recursively, through the core directory
 file(GLOB_RECURSE DOODLE_CORE_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/core/*.c")
 file(GLOB_RECURSE DOODLE_CORE_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/core/*.h")
+
 
 set(PLATFORM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/platforms/${PLATFORM_NAME})
 if(NOT EXISTS ${PLATFORM_DIR})

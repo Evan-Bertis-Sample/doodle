@@ -1,8 +1,8 @@
 #ifndef __DOODLE_APP_H__
 #define __DOODLE_APP_H__
 
-#include "doodle_math.h"
-#include "doodle_platform.h"
+#include "doodle/core/util/doodle_math.h"
+#include "doodle/core/doodle_platform.h"
 
 // forward declaration
 typedef struct doodle_app doodle_app_t;
