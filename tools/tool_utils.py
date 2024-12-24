@@ -69,3 +69,8 @@ class DoodleToolUtil:
 
         # execute the script
         os.exec([script_path] + args, shell=True)
+
+
+    @staticmethod
+    def get_doodle_platforms_dir():
+        return DoodleToolUtil.get_doodle_dir() + os.path.sep + "platforms"

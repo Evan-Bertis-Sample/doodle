@@ -7,7 +7,6 @@ import importlib
 
 TOOLS_FOLDER = "tools"
 
-
 def main():
     # Path to the 'doodle' directory
     doodle_dir = os.path.join(os.path.dirname(__file__), TOOLS_FOLDER)
