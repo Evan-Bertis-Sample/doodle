@@ -41,8 +41,8 @@ class DoodleBuildPlatform:
         return None
     
     @staticmethod
-    def get_build_dir(platform_name: str, project_name: str):
-        work_dir = DoodleToolUtil.get_doodle_work_dir()
+    def get_build_dir(platform_name: str, project_name: str, project_root_dir: str):
+        work_dir = DoodleToolUtil.get_doodle_work_dir(project_root_dir)
         build_dir = os.path.join(work_dir, "build", project_name, platform_name)
         # if it doesn't exist, create it
         os.makedirs(build_dir, exist_ok=True)
@@ -56,13 +56,13 @@ class DoodleBuildPlatform:
         self.build_info = build_info
         self.platform_info = platform_info
 
-    def build_platform(self, project_path: str, project_name: str):
+    def build_platform(self, project_path: str, project_name: str, project_root_dir: str):
         if self.build_info.build_type == DoodleBuildPlatformType.CMAKE_BUILD:
-            self.__build_platform_standard(project_path, project_name)
+            self.__build_platform_standard(project_path, project_name, project_root_dir)
         elif self.build_info.build_type == DoodleBuildPlatformType.PYTHON_BUILD:
-            self.__build_platform_custom(project_path, project_name)
+            self.__build_platform_custom(project_path, project_name, project_root_dir)
 
-    def __build_platform_standard(self, project_path: str, project_name: str):
+    def __build_platform_standard(self, project_path: str, project_name: str, project_root_dir: str):
         print("Doodle Build System (PYTHON BUILD)")
 
         # 1. Figure out platform_name (default = "native")
@@ -78,7 +78,7 @@ class DoodleBuildPlatform:
             return
 
         # 3. Figure out build directory
-        build_dir = DoodleBuildPlatform.get_build_dir(platform_name, project_name)
+        build_dir = DoodleBuildPlatform.get_build_dir(platform_name, project_name, project_root_dir)
 
         rel_project_dir = os.path.relpath(project_dir, DoodleToolUtil.get_doodle_parent_dir())
         print(f"Building project {project_name} in {project_dir} with platform {platform_name}")

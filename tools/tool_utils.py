@@ -17,29 +17,34 @@ class DoodleToolUtil:
     @staticmethod
     def get_doodle_module_types_str_list():
         return [e.name for e in DoodleModuleType]
+    
+    @staticmethod
+    def __get_root_dir():
+        return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     @staticmethod
     def get_doodle_dir():
-        # get where this file was executed
-        current_dir = os.getcwd()
-        return current_dir + os.path.sep + "doodle"
+        path = os.path.join(DoodleToolUtil.__get_root_dir(), "doodle")
+        print(path)
+        return os.path.join(DoodleToolUtil.__get_root_dir(), "doodle")
 
     @staticmethod
     def get_doodle_tool_dir():
-        current_dir = os.getcwd()
-        return current_dir + os.path.sep + "tools"
+        return os.path.join(DoodleToolUtil.get_doodle_dir(), "tools")
+    
+    @staticmethod
+    def get_doodle_platforms_dir():
+        return os.path.join(DoodleToolUtil.get_doodle_dir(), "platforms")
 
     @staticmethod
-    def get_doodle_work_dir():
+    def get_doodle_work_dir(project_dir : str):
         # get where this file was executed
         current_dir = os.getcwd()
         return current_dir + os.path.sep + ".doodle"
     
     @staticmethod
     def get_doodle_parent_dir():
-        # get where this file was executed
-        current_dir = os.getcwd()
-        return current_dir
+        return os.path.dirname(DoodleToolUtil.get_doodle_dir())
 
     @staticmethod
     def get_doodle_module_type_str(module_type: DoodleModuleType):

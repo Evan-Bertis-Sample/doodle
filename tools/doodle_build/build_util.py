@@ -73,8 +73,11 @@ class DoodleBuildUtil:
     @staticmethod
     def get_platforms() -> dict[str, DoodleBuildPlatform]:
         platforms = {}
-        for platform in os.listdir(DoodleToolUtil.get_doodle_dir() + os.path.sep + "platforms"):
-            platform_ini = os.path.sep.join([DoodleToolUtil.get_doodle_dir(), "platforms", platform, "doodle_platform.ini"])
+        for platform_dir in os.listdir(DoodleToolUtil.get_doodle_platforms_dir()):
+            platform_ini = os.path.join(
+                DoodleToolUtil.get_doodle_platforms_dir(), platform_dir, "doodle_platform.ini"
+            )
+
             if not os.path.exists(platform_ini):
                 continue
 
