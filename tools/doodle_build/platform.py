@@ -1,13 +1,11 @@
 from enum import Enum
 from typing import List
 import os
+import sys
 
 from tools.tool_utils import DoodleModuleType, DoodleToolUtil
 import subprocess
 import importlib
-
-DOODLE_BUILD_BASH_SCRIPT = "doodle_build/doodle_run.sh"
-
 
 class DoodleBuildPlatformType(Enum):
     CMAKE_BUILD = 1  # for just using the method desscribed in the platform
@@ -140,27 +138,66 @@ class DoodleBuildPlatform:
         print("Doodle Build System (CUSTOM BUILD)")
         print("Building project with custom build script")
         build_dir = DoodleBuildPlatform.get_build_dir(self.platform_info.name, project_name, project_path)
-        build_script = os.path.join(project_path, self.build_info.build_src)
-        if not os.path.exists(build_script):
-            print(f"Error: Build script {build_script} does not exist")
-            return
-        
-        # run the build script
-        print(f"Running build script: {build_script}")
-        module = importlib.import_module(build_script)
-        if not hasattr(module, "build"):
-            print(f"Error: Build script {build_script} does not have a 'build' function")
-            return
-        
-        # run the build function
-        print(f"Running build function")
-        module.build(project_path, project_name, build_dir)
+        # script should be at
+        # <doodle_platforms_dir>/<platform_name>/doodle.py
+        build_script = os.path.join(
+            DoodleToolUtil.get_doodle_platforms_dir(),
+            self.platform_info.name,
+            self.build_info.build_src,
+        )
 
-        # run the run function
+
+        # The "project root dir" could be the same as project_path or a parent dir
+        # depending on your setup. Adjust as needed.
+        project_root_dir = project_path
+
+        # Load the external Python file as a module
+        spec = importlib.util.spec_from_file_location("custom_build_script", build_script)
+        if spec is None:
+            print(f"Error: Unable to create import spec for {build_script}")
+            return
+
+        module = importlib.util.module_from_spec(spec)
+        try:
+            spec.loader.exec_module(module)
+        except Exception as e:
+            print(f"Error: Failed to load or execute {build_script}:\n{e}")
+            return
+
+        # The external script should define build(...) and run(...)
+        # Adjust the parameter list to match your script's function signatures.
+        if not hasattr(module, "build"):
+            print("Error: The custom build script does not define a build(...) function.")
+            return
+
+        if not hasattr(module, "run"):
+            print("Warning: The custom build script does not define a run(...) function.")
+
+        # Call build(...)
+        try:
+            module.build(
+                project_path=project_path,
+                project_name=project_name,
+                output_dir=build_dir
+            )
+        except Exception as e:
+            print(f"Error: 'build' function in {build_script} raised an exception:\n{e}")
+            return
+
+        # Call run(...)
+        # If run() isn't required or might not exist, you can make this optional:
         if hasattr(module, "run"):
-            print(f"Running run function")
-            module.run(project_path, project_name, build_dir)
+            try:
+                module.run(
+                    project_path=project_path,
+                    project_name=project_name,
+                    output_dir=build_dir
+                )
+            except Exception as e:
+                print(f"Error: 'run' function in {build_script} raised an exception:\n{e}")
         else:
-            print("No run function found in build script")
+            print("Skipping run(...) since it's not defined in the custom build script.")
+
+        print("Custom build process complete.")
         
 
