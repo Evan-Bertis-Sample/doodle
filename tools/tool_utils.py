@@ -39,8 +39,7 @@ class DoodleToolUtil:
     @staticmethod
     def get_doodle_work_dir(project_dir : str):
         # get where this file was executed
-        current_dir = os.getcwd()
-        return current_dir + os.path.sep + ".doodle"
+        return os.path.join(project_dir, ".doodle")
     
     @staticmethod
     def get_doodle_parent_dir():
