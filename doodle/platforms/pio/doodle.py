@@ -14,23 +14,7 @@ def get_pio_ini(directory: str):
 
     return None
 
-
-def main():
-    # expects <PROJECT_NAME> [platform_name] [project_dir]
-    parser = argparse.ArgumentParser(description="Build a project")
-    parser.add_argument("project_name", type=str, help="the name of the project")
-    parser.add_argument("platform_name", type=str, help="the name of the platform")
-    parser.add_argument("project_dir", type=str, help="the directory of the project")
-    args = parser.parse_args()
-
-    # we are essentially going to build a PlatformIO project, then compile it
-    # the project directory is the directory of the project
-    ini_file = get_pio_ini(args.project_dir)
-
-    # print the contents of the ini file
-    with open(ini_file, "r") as f:
-        print(f.read())
-
-
-if __name__ == "__main__":
-    main()
+def build(project_path : str, project_name : str, build_dir : str):
+    # literally copy-paste doodle into pio
+    # this is a placeholder
+    print(f"Building project {project_name} at {project_path} using platformIO")

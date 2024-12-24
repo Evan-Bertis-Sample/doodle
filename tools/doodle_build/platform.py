@@ -4,7 +4,7 @@ import os
 
 from tools.tool_utils import DoodleModuleType, DoodleToolUtil
 import subprocess
-import sys
+import importlib
 
 DOODLE_BUILD_BASH_SCRIPT = "doodle_build/doodle_run.sh"
 
@@ -56,13 +56,13 @@ class DoodleBuildPlatform:
         self.build_info = build_info
         self.platform_info = platform_info
 
-    def build_platform(self, project_path: str, project_name: str, project_root_dir: str):
+    def build_platform(self, project_path: str, project_name: str):
         if self.build_info.build_type == DoodleBuildPlatformType.CMAKE_BUILD:
-            self.__build_platform_standard(project_path, project_name, project_root_dir)
+            self.__build_platform_standard(project_path, project_name)
         elif self.build_info.build_type == DoodleBuildPlatformType.PYTHON_BUILD:
-            self.__build_platform_custom(project_path, project_name, project_root_dir)
+            self.__build_platform_custom(project_path, project_name)
 
-    def __build_platform_standard(self, project_path: str, project_name: str, project_root_dir: str):
+    def __build_platform_standard(self, project_path: str, project_name: str):
         print("Doodle Build System (PYTHON BUILD)")
 
         # 1. Figure out platform_name (default = "native")
@@ -78,7 +78,7 @@ class DoodleBuildPlatform:
             return
 
         # 3. Figure out build directory
-        build_dir = DoodleBuildPlatform.get_build_dir(platform_name, project_name, project_root_dir)
+        build_dir = DoodleBuildPlatform.get_build_dir(platform_name, project_name, project_dir)
 
         rel_project_dir = os.path.relpath(project_dir, DoodleToolUtil.get_doodle_parent_dir())
         print(f"Building project {project_name} in {project_dir} with platform {platform_name}")
@@ -94,7 +94,7 @@ class DoodleBuildPlatform:
             "-S", ".",  # Assume the current directory is the root CMakeLists.txt
             "-B", build_dir,
             f"-DPLATFORM_NAME={platform_name}",
-            f"-DPROJECT={project_name}",
+            f"-DPROJECT={project_name}",   
             f"-DPROJECT_CMAKE_DIR={rel_project_dir}",
             f"-DPLATFORM_MAIN_FILE={self.platform_info.main}",
         ]
@@ -133,12 +133,34 @@ class DoodleBuildPlatform:
             print(f"Error running executable: {e}")
 
     def __build_platform_custom(self, project_path: str, project_name: str):
-        # there should be a build script in the platform directory
-        # called doodle.py, which should be a python script which
-        # builds the project
+        # we should pass in the project path, project name, and project root dir, and the output dir
+        # to the script
+        # the script must include a "build" function that takes in these parameters
+        # and a "run" function that runs/uploads the project
+        print("Doodle Build System (CUSTOM BUILD)")
+        print("Building project with custom build script")
+        build_dir = DoodleBuildPlatform.get_build_dir(self.platform_info.name, project_name, project_path)
+        build_script = os.path.join(project_path, self.build_info.build_src)
+        if not os.path.exists(build_script):
+            print(f"Error: Build script {build_script} does not exist")
+            return
+        
+        # run the build script
+        print(f"Running build script: {build_script}")
+        module = importlib.import_module(build_script)
+        if not hasattr(module, "build"):
+            print(f"Error: Build script {build_script} does not have a 'build' function")
+            return
+        
+        # run the build function
+        print(f"Running build function")
+        module.build(project_path, project_name, build_dir)
 
-        # the build script expects:
-        # <PROJECT_NAME> [platform_name] [project_dir]
-        command = (
-            f"python {self.path}/doodle.py {project_name} {self.name} {project_path}"
-        )
+        # run the run function
+        if hasattr(module, "run"):
+            print(f"Running run function")
+            module.run(project_path, project_name, build_dir)
+        else:
+            print("No run function found in build script")
+        
+

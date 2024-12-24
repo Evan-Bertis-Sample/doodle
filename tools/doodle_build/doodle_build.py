@@ -45,4 +45,4 @@ def main(args):
         f"Building project {args.project_name} with platform {args.platform_name} using {platform.build_info.build_type.name} method"
     )
 
-    platform.build_platform(args.project_dir, args.project_name, project_dir)
+    platform.build_platform(args.project_dir, args.project_name)
