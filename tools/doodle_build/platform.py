@@ -39,9 +39,9 @@ class DoodleBuildPlatform:
         return None
     
     @staticmethod
-    def get_build_dir(platform_name: str, project_name: str, project_root_dir: str):
+    def get_build_dir(platform_name: str, project_root_dir: str):
         work_dir = DoodleToolUtil.get_doodle_work_dir(project_root_dir)
-        build_dir = os.path.join(work_dir, "build", project_name, platform_name)
+        build_dir = os.path.join(work_dir, "build", platform_name)
         # if it doesn't exist, create it
         os.makedirs(build_dir, exist_ok=True)
         return build_dir
@@ -76,7 +76,7 @@ class DoodleBuildPlatform:
             return
 
         # 3. Figure out build directory
-        build_dir = DoodleBuildPlatform.get_build_dir(platform_name, project_name, project_dir)
+        build_dir = DoodleBuildPlatform.get_build_dir(platform_name, project_dir)
 
         rel_project_dir = os.path.relpath(project_dir, DoodleToolUtil.get_doodle_parent_dir())
         print(f"Building project {project_name} in {project_dir} with platform {platform_name}")
@@ -137,7 +137,7 @@ class DoodleBuildPlatform:
         # and a "run" function that runs/uploads the project
         print("Doodle Build System (CUSTOM BUILD)")
         print("Building project with custom build script")
-        build_dir = DoodleBuildPlatform.get_build_dir(self.platform_info.name, project_name, project_path)
+        build_dir = DoodleBuildPlatform.get_build_dir(self.platform_info.name, project_path)
         # script should be at
         # <doodle_platforms_dir>/<platform_name>/doodle.py
         build_script = os.path.join(

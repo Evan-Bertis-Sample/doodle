@@ -24,8 +24,6 @@ class DoodleToolUtil:
 
     @staticmethod
     def get_doodle_dir():
-        path = os.path.join(DoodleToolUtil.__get_root_dir(), "doodle")
-        print(path)
         return os.path.join(DoodleToolUtil.__get_root_dir(), "doodle")
 
     @staticmethod
