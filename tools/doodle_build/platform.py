@@ -84,6 +84,9 @@ class DoodleBuildPlatform:
         print(f"Building project {project_name} in {project_dir} with platform {platform_name}")
         print("Rel project dir: ", rel_project_dir)
 
+        # replace backslashes with forward slashes for CMake
+        rel_project_dir = rel_project_dir.replace("\\", "/")
+
         # 4. Run CMake configure
         cmake_command = [
             "cmake",
@@ -93,6 +96,7 @@ class DoodleBuildPlatform:
             f"-DPLATFORM_NAME={platform_name}",
             f"-DPROJECT={project_name}",
             f"-DPROJECT_CMAKE_DIR={rel_project_dir}",
+            f"-DPLATFORM_MAIN_FILE={self.platform_info.main}",
         ]
         try:
             subprocess.run(cmake_command, check=True)
@@ -104,7 +108,7 @@ class DoodleBuildPlatform:
         build_command = [
             "cmake",
             "--build", build_dir,
-            "--target", project_name
+            "--target", project_name  
         ]
         try:
             subprocess.run(build_command, check=True)

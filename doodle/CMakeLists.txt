@@ -50,7 +50,16 @@ target_include_directories(doodle PUBLIC
 # Most specifically, arduino sketches have a different entry point than a normal C program.
 
 # Check if there's a platform-specific main.c file
-set(PLATFORM_MAIN_FILE ${PLATFORM_DIR}/main.c)
+# we may have been passed in a platform main file path, lets check if it exists
+# if not, we will use the default main.c file
+if (DEFINED PLATFORM_MAIN_FILE)
+    set(PLATFORM_MAIN_FILE ${PLATFORM_MAIN_FILE})
+else()
+    set(PLATFORM_MAIN_FILE ${PLATFORM_DIR}/main.c)
+    message(STATUS "No platform main file path provided, using default main.c from ${PLATFORM_MAIN_FILE}")
+endif()
+
+
 if(EXISTS ${PLATFORM_MAIN_FILE})
     message(STATUS "Using platform-specific main.c from ${PLATFORM_MAIN_FILE}")
     target_sources(doodle PRIVATE ${PLATFORM_MAIN_FILE})

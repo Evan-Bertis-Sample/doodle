@@ -46,8 +46,9 @@ class DoodleBuildUtil:
         # now we should get the supported modules, platform name, version and main
         if not ini_file.has_section("platform"):
             return None
-
-        platform_name = ini_file.get("platform", "platform")
+        
+        # get the direcotory name of the ini file, which should be the platform name
+        platform_name = os.path.basename(os.path.dirname(ini_file_path))
         platform_version = ini_file.get("platform", "version")
         platform_main = ini_file.get("platform", "main")
         platform_modules_raw = ini_file.get("platform", "modules")

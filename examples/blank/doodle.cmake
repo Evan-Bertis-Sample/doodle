@@ -17,5 +17,3 @@ function(build_project)
     message(STATUS "Linking doodle library")
     target_link_libraries(blank PRIVATE doodle)
 endfunction()
-
-

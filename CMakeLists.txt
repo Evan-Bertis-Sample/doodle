@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 project(${PROJECT} C)
 
+
 # Set default platform name if not provided
 set(PLATFORM_NAME "native" CACHE STRING "Platform name")
 
