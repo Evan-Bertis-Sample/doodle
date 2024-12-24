@@ -3,11 +3,29 @@
 import os
 from tools.tool_utils import DoodleToolUtil
 import shutil
+import json
 
 TEMPLATE_MAP = {
     "project": "project_template",
     "platform": "platform_template",
 }
+
+def create_cpp_properties_object():
+    # basically just add absolute paths to the include directories
+    # that way vscode can find the headers
+    doodle_includes = []
+    doodle_includes.append(DoodleToolUtil.get_doodle_dir())
+
+    obj = {}
+    obj["configurations"] = [
+        {
+            "name": "doodle",
+            "includePath": doodle_includes,
+            "defines": [],
+        }
+    ]
+    return obj
+
 
 def register_subparser(parser):
     # type arg, required, is it a project or a platform?
@@ -65,6 +83,15 @@ def main(args):
 
     # now copy all the files and directories to the new location
     shutil.copytree(template_path, path, dirs_exist_ok=True)
+
+    # now write the cpp_properties.json file
+    cpp_properties_path = os.path.join(path, ".vscode")
+    os.makedirs(cpp_properties_path, exist_ok=True)
+    cpp_properties_file = os.path.join(cpp_properties_path, "c_cpp_properties.json")
+    cpp_properties_object = create_cpp_properties_object()
+    with open(cpp_properties_file, "w") as f:
+        f.write(json.dumps(cpp_properties_object, indent=4))
+    
 
 
 
