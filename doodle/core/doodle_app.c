@@ -11,7 +11,7 @@
 
 #include "doodle_platform.h"
 
-doodle_app_t g_doodle_app;
+extern doodle_app_t g_doodle_app;
 
 doodle_app_t doodle_app_create(doodle_app_desc_t desc, doodle_platform_t platform) {
     doodle_app_t app = {

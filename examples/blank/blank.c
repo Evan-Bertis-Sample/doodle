@@ -1,9 +1,10 @@
 #include <stdio.h>
 
 #define DOODLE_MAIN
-#include <doodle_math.h>
-#include <doodle_platform.h>
-#include <doodle_app.h>
+
+#include <doodle/core/util/doodle_math.h>
+#include <doodle/core/doodle_platform.h>
+#include <doodle/core/doodle_app.h>
 
 static void blank_setup(void) {
     printf("setup\n");
