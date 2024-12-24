@@ -15,6 +15,10 @@ include(${DOODLE_PROJECT_ROOT_DIR}/doodle.cmake)
 
 message(STATUS "Building project ${PROJECT_NAME} (${PROJECT_CMAKE_DIR}) for platform ${PLATFORM_NAME}")
 
+# add a new target for the project PROJECT_NAME
+# this will be the final executable
+add_executable(${PROJECT_NAME})
+
 # Add the doodle library
 add_subdirectory(doodle)
 
@@ -23,5 +27,11 @@ message(STATUS "Project root directory: ${DOODLE_PROJECT_ROOT_DIR}")
 
 # call the build_project function
 build_project()
+
+# now all sources have been added to the project, we can build it
+# this will be the final executable
+message(STATUS "Building executable ${PROJECT_NAME}")
+# now finally add PROJECT_SOURCES to the project
+target_link_libraries(${PROJECT_NAME} PRIVATE doodle)
 
 

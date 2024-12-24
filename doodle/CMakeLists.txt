@@ -52,6 +52,10 @@ target_include_directories(doodle PUBLIC
 # Check if there's a platform-specific main.c file
 # we may have been passed in a platform main file path, lets check if it exists
 # if not, we will use the default main.c file
+
+# update PLATFORM_MAIN_FILE to be in the platform directory
+set(PLATFORM_MAIN_FILE ${PLATFORM_DIR}/${PLATFORM_MAIN_FILE})
+
 if (DEFINED PLATFORM_MAIN_FILE)
     set(PLATFORM_MAIN_FILE ${PLATFORM_MAIN_FILE})
 else()
@@ -68,8 +72,8 @@ else()
     target_sources(doodle PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/main.c)
 endif()
 
-# now this main file will be the executable for the project
-add_executable(${PROJECT_NAME} ${PLATFORM_MAIN_FILE})
+# now add the platform main file to the sources for the PROJECT_NAME executable
+target_sources(${PROJECT_NAME} PRIVATE ${PLATFORM_MAIN_FILE})
 
 # If the platform.cmake sets additional properties (like target_link_libraries calls),
 # they will already be in effect after being included.
