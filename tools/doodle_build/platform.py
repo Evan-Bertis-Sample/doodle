@@ -146,11 +146,6 @@ class DoodleBuildPlatform:
             self.build_info.build_src,
         )
 
-
-        # The "project root dir" could be the same as project_path or a parent dir
-        # depending on your setup. Adjust as needed.
-        project_root_dir = project_path
-
         # Load the external Python file as a module
         spec = importlib.util.spec_from_file_location("custom_build_script", build_script)
         if spec is None:
