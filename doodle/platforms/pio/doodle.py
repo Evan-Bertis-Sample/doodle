@@ -4,6 +4,8 @@ import os
 import shutil
 import subprocess
 
+from tools.tool_utils import DoodleToolUtil
+
 MAIN_FILE = os.path.join(os.path.dirname(__file__), "pio_main.c")
 
 
@@ -65,7 +67,29 @@ def build(project_path: str, project_name: str, output_dir: str):
         shutil.copytree(
             lib_dir, os.path.join(pio_project_dir, "lib"), dirs_exist_ok=True
         )
+
+    # now lets copy over doodle files into the lib directory
+    doodle_core_dir = os.path.join(DoodleToolUtil.get_doodle_dir(), "core")
+    doodle_pio_platform_dir = os.path.join(DoodleToolUtil.get_doodle_platforms_dir(), "pio")
+    doodle_dest_dir = os.path.join(pio_project_dir, "include", "doodle")
+
+
+    if not os.path.exists(doodle_core_dir):
+        print("Error: Doodle core directory not found")
+        return
     
+    if not os.path.exists(doodle_pio_platform_dir):
+        print("Error: Doodle pio platform directory not found")
+        return
+    
+    shutil.copytree(
+        doodle_core_dir, os.path.join(doodle_dest_dir, "core"), dirs_exist_ok=True
+    )
+
+    shutil.copytree(
+        doodle_pio_platform_dir, os.path.join(doodle_dest_dir, "platforms", "pio"), dirs_exist_ok=True
+    )
+
     # now copy the main file to the src directory
     main_file = os.path.join(pio_project_dir, "src", "main.c")
     shutil.copyfile(MAIN_FILE, main_file)
