@@ -1,7 +1,5 @@
 #include <stdio.h>
 
-#define DOODLE_MAIN
-
 #include <doodle/core/util/doodle_math.h>
 #include <doodle/core/doodle_platform.h>
 #include <doodle/core/doodle_app.h>
