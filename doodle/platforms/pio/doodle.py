@@ -7,9 +7,6 @@ import subprocess
 MAIN_FILE = os.path.join(os.path.dirname(__file__), "pio_main.c")
 
 
-def get_pio_project_dir(output_dir: str):
-    return os.path.join(output_dir, "pio_project")
-
 
 def build(project_path: str, project_name: str, output_dir: str):
     # literally copy-paste doodle into pio
@@ -19,13 +16,16 @@ def build(project_path: str, project_name: str, output_dir: str):
     # lets see if there is a PlatformIO project ini file in the project directory
     # if not, we need to alert the user
     platformio_ini = os.path.join(project_path, "platformio.ini")
+    
 
     if not os.path.exists(platformio_ini):
         print("Error: No platformio.ini file found in the project directory")
         return
+    
+    print("Building PlatformIO project from doodle project at ", project_path)
 
     # create the project directory
-    pio_project_dir = get_pio_project_dir(output_dir)
+    pio_project_dir = output_dir
     os.makedirs(pio_project_dir, exist_ok=True)
 
     # erase everything in the project directory to make sure it is clean
