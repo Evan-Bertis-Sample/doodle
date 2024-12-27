@@ -52,11 +52,11 @@ git clone https://github.com/evan-bertis-sample/doodle.git
 Then, you have to install the CLI:
 
 ```bash
-cd doodle
-python doodle_setup.py install
+cd doodle/scripts
+./doodle_install.sh
 ```
 
-This will add the `doodle` command to your path. You can now create a new project in any directory:
+This will install the doodle CLI for use globally. You may have to follow the instructions to add the CLI to your path if you are on Windows.
 
 ```bash
 doodle create project <project_name>
