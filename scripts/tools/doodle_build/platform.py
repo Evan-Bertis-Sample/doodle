@@ -80,10 +80,12 @@ class DoodleBuildPlatform:
 
         rel_project_dir = os.path.relpath(project_dir, DoodleToolUtil.get_doodle_parent_dir())
         print(f"Building project {project_name} in {project_dir} with platform {platform_name}")
-        print("Rel project dir: ", rel_project_dir)
+        print("Relative project dir: ", rel_project_dir)
 
         # replace backslashes with forward slashes for CMake
         rel_project_dir = rel_project_dir.replace("\\", "/")
+
+        work_dir = DoodleToolUtil.get_doodle_parent_dir()
 
         # 4. Run CMake configure
         cmake_command = [
@@ -97,7 +99,7 @@ class DoodleBuildPlatform:
             f"-DPLATFORM_MAIN_FILE={self.platform_info.main}",
         ]
         try:
-            subprocess.run(cmake_command, check=True)
+            subprocess.run(cmake_command, check=True, cwd=work_dir)
         except subprocess.CalledProcessError as e:
             print(f"Error configuring with CMake: {e}")
             return
@@ -109,7 +111,7 @@ class DoodleBuildPlatform:
             "--target", project_name  
         ]
         try:
-            subprocess.run(build_command, check=True)
+            subprocess.run(build_command, check=True, cwd=work_dir)
         except subprocess.CalledProcessError as e:
             print(f"Error building project: {e}")
             return
