@@ -10,11 +10,11 @@ function(build_project)
     # find all of the .c files in this directory,
     # they will be compiled into the blank executable
 
-    message(STATUS "Adding app.c to the project, using path ${DOODLE_PROJECT_ROOT_DIR}/app.c")
+    message(STATUS "Adding app.c to the project, using path ${DOODLE_PROJECT_ROOT_DIR}/src.app.c")
 
     # link blank.c to PROJECT_NAME executable, which has already been defined
-    target_sources(${PROJECT_NAME} PRIVATE ${DOODLE_PROJECT_ROOT_DIR}/app.c)
+    target_sources(${PROJECT_NAME} PRIVATE ${DOODLE_PROJECT_ROOT_DIR}/src/app.c)
 
     message(STATUS "Linking doodle library")
-    target_link_libraries(blank PRIVATE doodle)
+    target_link_libraries(${PROJECT_NAME} PRIVATE doodle)
 endfunction()
