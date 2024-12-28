@@ -8,8 +8,8 @@
 typedef struct doodle_app doodle_app_t;
 
 typedef struct doodle_app_desc {
-    const char *name;
-    const doodle_vec2_t display_size;
+    char *name;
+    doodle_vec2_t display_size;
     void (*setup)(doodle_app_t *app);
     void (*loop)(doodle_app_t *app);
     void (*teardown)(doodle_app_t *app);
