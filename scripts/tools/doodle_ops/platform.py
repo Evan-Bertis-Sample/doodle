@@ -56,11 +56,30 @@ class DoodleBuildPlatform:
 
     def build_platform(self, project_path: str, project_name: str):
         if self.build_info.build_type == DoodleBuildPlatformType.CMAKE_BUILD:
-            self.__build_platform_standard(project_path, project_name)
+            self.__build_platform_cmake(project_path, project_name)
         elif self.build_info.build_type == DoodleBuildPlatformType.PYTHON_BUILD:
             self.__build_platform_custom(project_path, project_name)
 
-    def __build_platform_standard(self, project_path: str, project_name: str):
+    def run_platform(self, project_path: str, project_name: str):
+        if self.build_info.build_type == DoodleBuildPlatformType.CMAKE_BUILD:
+            self.__run_platform_cmake(project_path, project_name)
+        elif self.build_info.build_type == DoodleBuildPlatformType.PYTHON_BUILD:
+            self.__run_platform_custom(project_path, project_name)
+
+    def clean_platform(self, project_path: str, project_name: str):
+        # find the build directory and remove it
+        build_dir = DoodleBuildPlatform.get_build_dir(self.platform_info.name, project_path)
+        if os.path.exists(build_dir):
+            print(f"Cleaning build directory {build_dir}")
+            try:
+                subprocess.run(["rm", "-rf", build_dir], check=True)
+            except subprocess.CalledProcessError as e:
+                print(f"Error cleaning build directory: {e}")
+                return
+        else:
+            print(f"Build directory {build_dir} does not exist, nothing to clean)")
+
+    def __build_platform_cmake(self, project_path: str, project_name: str):
         print("Doodle Build System (PYTHON BUILD)")
 
         # 1. Figure out platform_name (default = "native")
@@ -124,27 +143,60 @@ class DoodleBuildPlatform:
             return
 
         print(f"Build complete. The executable should be in {build_dir}")
-        print("Running the executable...")
-        print("-----------------------------------\n")
 
-        # # 6. Run the generated executable. 
-        # #    On Windows, you may have a .exe. On Unix-like systems, you often won't.
-        # #    Adjust accordingly if your platform doesn't use ".exe".
-        # exe_path = os.path.join(build_dir, f"{project_name}.exe")
-        # print(f"Running executable: {exe_path}")
-        # try:
-        #     subprocess.run([exe_path], check=True)
-        # except FileNotFoundError:
-        #     print(f"Executable not found: {exe_path}")
-        # except subprocess.CalledProcessError as e:
-        #     print(f"Error running executable: {e}")
+    def __run_platform_cmake(self, project_path: str, project_name: str):
+        print("Doodle Build System (PYTHON BUILD)")
+
+        # 1. Figure out platform_name (default = "native")
+        platform_name = self.platform_info.name if self.platform_info.name else "native"
+        if not self.platform_info.name:
+            print(f"No platform specified, using default: {platform_name}")
+
+        # 2. Figure out the project directory
+        # Check if the project directory actually exists
+        project_dir = os.path.abspath(project_path)
+        if not os.path.exists(project_dir):
+            print(f"Error: Project directory does not exist: {project_dir}")
+            return
+
+        # 3. Figure out build directory
+        build_dir = DoodleBuildPlatform.get_build_dir(platform_name, project_dir)
+
+        rel_project_dir = os.path.relpath(project_dir, DoodleToolUtil.get_doodle_parent_dir())
+        print(f"Running project {project_name} in {project_dir} with platform {platform_name}")
+        print("Relative project dir: ", rel_project_dir)
+
+        work_dir = DoodleToolUtil.get_doodle_parent_dir()
+
+        # 4. Run the project
+        run_command = [
+            os.path.join(build_dir, project_name)
+        ]
+        try:
+            subprocess.run(run_command, check=True, cwd=work_dir)
+        except subprocess.CalledProcessError as e:
+            print(f"Error running project: {e}")
+            return
+
+
+    def __get_custom_module(build_script_path : str):
+        # Load the external Python file as a module
+        spec = importlib.util.spec_from_file_location("custom_build_script", build_script_path)
+        if spec is None:
+            print(f"Error: Unable to create import spec for {build_script_path}")
+            return None
+
+        module = importlib.util.module_from_spec(spec)
+        try:
+            spec.loader.exec_module(module)
+        except Exception as e:
+            print(f"Error: Failed to load or execute {build_script_path}:\n{e}")
+            return None
+        
+        return module
+        
 
     def __build_platform_custom(self, project_path: str, project_name: str):
-        # we should pass in the project path, project name, and project root dir, and the output dir
-        # to the script
-        # the script must include a "build" function that takes in these parameters
-        # and a "run" function that runs/uploads the project
-        print("Doodle Build System (CUSTOM BUILD)")
         print("Building project with custom build script")
         build_dir = DoodleBuildPlatform.get_build_dir(self.platform_info.name, project_path)
         # script should be at
@@ -155,27 +207,11 @@ class DoodleBuildPlatform:
             self.build_info.build_src,
         )
 
-        # Load the external Python file as a module
-        spec = importlib.util.spec_from_file_location("custom_build_script", build_script)
-        if spec is None:
-            print(f"Error: Unable to create import spec for {build_script}")
+        if not os.path.exists(build_script):
+            print(f"Error: Build script not found at {build_script}")
             return
-
-        module = importlib.util.module_from_spec(spec)
-        try:
-            spec.loader.exec_module(module)
-        except Exception as e:
-            print(f"Error: Failed to load or execute {build_script}:\n{e}")
-            return
-
-        # The external script should define build(...) and run(...)
-        # Adjust the parameter list to match your script's function signatures.
-        if not hasattr(module, "build"):
-            print("Error: The custom build script does not define a build(...) function.")
-            return
-
-        if not hasattr(module, "run"):
-            print("Warning: The custom build script does not define a run(...) function.")
+        
+        module = DoodleBuildPlatform.__get_custom_module(build_script)
 
         # Call build(...)
         try:
@@ -187,21 +223,45 @@ class DoodleBuildPlatform:
         except Exception as e:
             print(f"Error: 'build' function in {build_script} raised an exception:\n{e}")
             return
+        
+
+    def __run_platform_custom(self, project_path: str, project_name: str):
+        # we should pass in the project path, project name, and project root dir, and the output dir
+        # to the script
+        # the script must include a "build" function that takes in these parameters
+        # and a "run" function that runs/uploads the project
+        print("Doodle Build System (CUSTOM BUILD)")
+        print("Running project with custom build script")
+        build_dir = DoodleBuildPlatform.get_build_dir(self.platform_info.name, project_path)
+        # script should be at
+        # <doodle_platforms_dir>/<platform_name>/doodle.py
+        build_script = os.path.join(
+            DoodleToolUtil.get_doodle_platforms_dir(),
+            self.platform_info.name,
+            self.build_info.build_src,
+        )
+
+        if not os.path.exists(build_script):
+            print(f"Error: Build script not found at {build_script}")
+            return
+        
+        module = DoodleBuildPlatform.__get_custom_module(build_script)
 
         # Call run(...)
-        # If run() isn't required or might not exist, you can make this optional:
-        if hasattr(module, "run"):
-            try:
-                module.run(
-                    project_path,
-                    project_name,
-                    build_dir
-                )
-            except Exception as e:
-                print(f"Error: 'run' function in {build_script} raised an exception:\n{e}")
-        else:
-            print("Skipping run(...) since it's not defined in the custom build script.")
-
-        print("Custom build process complete.")
+        try:
+            module.run(
+                project_path,
+                project_name,
+                build_dir
+            )
+        except Exception as e:
+            print(f"Error: 'run' function in {build_script} raised an exception:\n{e}")
+            return
+        
+    def __hash__(self):
+        return hash((self.build_info, self.platform_info))
+    
+    def __str__(self):
+        return f"Platform: {self.platform_info.name} ({self.build_info.build_type.name})"
         
 

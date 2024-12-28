@@ -6,7 +6,7 @@ import configparser
 
 from tools.tool_utils import DoodleToolUtil
 
-from tools.doodle_build.platform import (
+from tools.doodle_ops.platform import (
     DoodleBuildPlatform,
     DoodleBuildPlatformType,
     DoodleBuildPlatformBuildInfo,
@@ -82,5 +82,6 @@ class DoodleBuildUtil:
             if platform is None:
                 continue
 
-            platforms[platform.platform_info.name] = platform
+            name = platform.platform_info.name.lower()
+            platforms[name] = platform
         return platforms
