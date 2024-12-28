@@ -18,10 +18,6 @@ def register_subparser(subparser):
 
 
 def main(args):
-    platform_name = args.platform_name
-    project_name = args.project_name
-    project_dir = args.project_dir
-
     # get the platforms
     platforms = DoodleBuildUtil.get_platforms()
 

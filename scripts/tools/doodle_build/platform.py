@@ -171,9 +171,9 @@ class DoodleBuildPlatform:
         # Call build(...)
         try:
             module.build(
-                project_path=project_path,
-                project_name=project_name,
-                output_dir=build_dir
+                project_path,
+                project_name,
+                build_dir
             )
         except Exception as e:
             print(f"Error: 'build' function in {build_script} raised an exception:\n{e}")
@@ -184,9 +184,9 @@ class DoodleBuildPlatform:
         if hasattr(module, "run"):
             try:
                 module.run(
-                    project_path=project_path,
-                    project_name=project_name,
-                    output_dir=build_dir
+                    project_path,
+                    project_name,
+                    build_dir
                 )
             except Exception as e:
                 print(f"Error: 'run' function in {build_script} raised an exception:\n{e}")
