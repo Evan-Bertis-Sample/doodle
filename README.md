@@ -1,6 +1,6 @@
 # doodle
 
-A platform-agnostic, lightweight framework and build tool for building embedded applications in C/C++, intended for user-facing applications on embedded systems. Originally intended for `Northwestern Formula Racing`'s 2025 car dashboard, but open to all.
+A platform-agnostic, lightweight framework and build tool for building embedded applications in C/C++, intended for user-facing applications in embedded systems. Originally intended for `Northwestern Formula Racing`'s 2025 car dashboard, but open to all.
 
 **Building embedded applications can be a pain, particularly when building applications like user interfaces.** You end up spending a lot of time working on drivers, reflashing devices for each change, and debugging hardware issues.
 
