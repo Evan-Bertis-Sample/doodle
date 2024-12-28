@@ -5,6 +5,8 @@
  *
  *------------------------------------------------------------------------**/
 
+#include <Arduino.h>
+
 #include <doodle/core/doodle_app.h>
 #include <doodle/core/doodle_platform.h>
 

@@ -7,9 +7,8 @@
  *
  *------------------------------------------------------------------------**/
 
-#include "doodle_app.h"
-
-#include "doodle_platform.h"
+#include <doodle/core/doodle_app.h>
+#include <doodle/core/doodle_platform.h>
 
 doodle_app_t doodle_app_create(doodle_app_desc_t desc, doodle_platform_t platform) {
     doodle_app_t app = {

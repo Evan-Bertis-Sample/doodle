@@ -85,7 +85,7 @@ def build(project_src_path: str, project_name: str, build_output_dir: str):
                 shutil.rmtree(os.path.join(root, d))
 
     # Copy our main file to the src directory
-    main_c_file_path = os.path.join(build_output_dir, "src", "main.c")
+    main_c_file_path = os.path.join(build_output_dir, "src", "main.cpp")
     shutil.copyfile(MAIN_FILE_PATH, main_c_file_path)
 
     # Run `pio run` in the build output directory

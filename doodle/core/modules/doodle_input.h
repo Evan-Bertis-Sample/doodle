@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include "doodle/core/doodle_modules.h"
+#include <doodle/core/doodle_modules.h>
 
 typedef enum doodle_input_type {
     DOODLE_INPUT_TYPE_NONE,
