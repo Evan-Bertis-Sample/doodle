@@ -16,6 +16,10 @@ Imagine this: you are building a dashboard for a car, it has a few gauges, some 
 - **Built-in simulation support**: `doodle` comes with built-in support for simulating your application on your desktop, allowing you to test your application without needing to flash it to your device.
 - **Written completely in C99**: `doodle` is written in C99, meaning it can be easily compiled onto most platforms, and can be used in your existing projects with ease.
 
+## Examples!
+
+I have created a few example applications to show off the capabilities of `doodle`. These work on the native platform and ESP32 using PlatformIO. You can find them in their own [repository](https://github.com/evan-bertis-sample/doodle-examples.git).
+
 ## Some Concepts
 
 doodle serves as a modular hardware-abstraction layer. At the core of `doodle` is the concept of a `Platform`. A `Platform` is a set of modules that define the hardware and drivers for a specific platform. Some modules that a `Platform` might include are:
@@ -59,13 +63,7 @@ cd doodle/scripts
 This will install the doodle CLI for use globally. You may have to follow the instructions to add the CLI to your path if you are on Windows.
 
 ```bash
-doodle create project <project_name>
-```
-
-You can optionally specify a path to create the project in:
-
-```bash
-doodle create project <project_name> --path <path>
+doodle create project <project_name> <path>
 ```
 
 This will create a simple doodle project, which looks like this:
@@ -107,7 +105,7 @@ doodle_app_desc_t doodle_main(int32_t argc, char *argv[]) {
 This is a simple doodle application that prints "setup", "loop", and "teardown" to the console. You can build and run this application using the `doodle` CLI. It also comes with all of the necessary .ini files that `doodle` needs to build and run your application. Documentation on this will be coming soon.
 
 ```bash
-doodle build <project_name> native .
+doodle build native .
 ```
 
 This commmand will build the project for the native platform, and run it. You can also build for other platforms, like `pio` which will build for the PlatformIO platform.
