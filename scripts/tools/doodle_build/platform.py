@@ -87,6 +87,12 @@ class DoodleBuildPlatform:
 
         work_dir = DoodleToolUtil.get_doodle_parent_dir()
 
+        rel_build_src = os.path.join(
+            DoodleToolUtil.get_doodle_platforms_dir(),
+            platform_name,
+            self.build_info.build_src
+        )
+
         # 4. Run CMake configure
         cmake_command = [
             "cmake",
@@ -96,6 +102,7 @@ class DoodleBuildPlatform:
             f"-DPLATFORM_NAME={platform_name}",
             f"-DPROJECT={project_name}",   
             f"-DPROJECT_CMAKE_DIR={rel_project_dir}",
+            f"-DPLATFORM_CMAKE_FILE={rel_build_src}",
             f"-DPLATFORM_MAIN_FILE={self.platform_info.main}",
         ]
         try:
@@ -120,17 +127,17 @@ class DoodleBuildPlatform:
         print("Running the executable...")
         print("-----------------------------------\n")
 
-        # 6. Run the generated executable. 
-        #    On Windows, you may have a .exe. On Unix-like systems, you often won't.
-        #    Adjust accordingly if your platform doesn't use ".exe".
-        exe_path = os.path.join(build_dir, f"{project_name}.exe")
-        print(f"Running executable: {exe_path}")
-        try:
-            subprocess.run([exe_path], check=True)
-        except FileNotFoundError:
-            print(f"Executable not found: {exe_path}")
-        except subprocess.CalledProcessError as e:
-            print(f"Error running executable: {e}")
+        # # 6. Run the generated executable. 
+        # #    On Windows, you may have a .exe. On Unix-like systems, you often won't.
+        # #    Adjust accordingly if your platform doesn't use ".exe".
+        # exe_path = os.path.join(build_dir, f"{project_name}.exe")
+        # print(f"Running executable: {exe_path}")
+        # try:
+        #     subprocess.run([exe_path], check=True)
+        # except FileNotFoundError:
+        #     print(f"Executable not found: {exe_path}")
+        # except subprocess.CalledProcessError as e:
+        #     print(f"Error running executable: {e}")
 
     def __build_platform_custom(self, project_path: str, project_name: str):
         # we should pass in the project path, project name, and project root dir, and the output dir

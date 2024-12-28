@@ -26,8 +26,6 @@ message(STATUS "DOODLE_PARENT_DIR: ${DOODLE_PARENT_DIR}")
 # Collect all core .c and .h files recursively, through the core directory
 file(GLOB_RECURSE DOODLE_CORE_SOURCES "${DOODLE_PARENT_DIR}/doodle/core/*.c")
 file(GLOB_RECURSE DOODLE_CORE_HEADERS "${DOODLE_PARENT_DIR}/doodle/core/*.h")
-# print all of the relative paths to the core header files
-message(STATUS "DOODLE_CORE_HEADERS: ${DOODLE_CORE_HEADERS}")
 
 # --- COMPILING PLATFORM : This assumes that the platform is CMake as well ---
 
@@ -39,8 +37,6 @@ if(NOT EXISTS ${PLATFORM_DIR})
     message(FATAL_ERROR "Specified platform '${PLATFORM_NAME}' not found at ${PLATFORM_DIR}")
 endif()
 
-# Check if there's a platform-specific CMake configuration file
-set(PLATFORM_CMAKE_FILE ${PLATFORM_DIR}/${PLATFORM_NAME}.cmake)
 if(EXISTS ${PLATFORM_CMAKE_FILE})
     # The platform.cmake file should define at least:
     #   PLATFORM_SOURCES (list of .c files)
