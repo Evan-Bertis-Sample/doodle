@@ -1,4 +1,4 @@
-# doodle_build.py
+# doodle_clean.py
 
 from tools.doodle_ops.build_util import DoodleBuildUtil
 from tools.doodle_ops.ops_common import DoodleOpsCommon
@@ -15,7 +15,7 @@ def main(args):
         return
 
     print(
-        f"Building project {args.project_name} with platform {args.platform_name} using {platform.build_info.build_type.name} method"
+        f"Cleaning project {args.project_name} with platform {args.platform_name} using {platform.build_info.build_type.name} method"
     )
 
-    platform.build_platform(args.project_dir, args.project_name)
+    platform.clean_platform(args.project_dir, args.project_name)
