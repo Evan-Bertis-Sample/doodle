@@ -70,6 +70,31 @@ EOF
   echo ""
   echo "Installation complete."
 
+
+  # for bash users, we can also create a bash script
+  USER_BIN_BASH="$HOME/bin"
+  if [ ! -d "$USER_BIN_BASH" ]; then
+    echo "Creating directory: $USER_BIN_BASH"
+    mkdir -p "$USER_BIN_BASH"
+  fi
+
+  cat <<EOF > "$USER_BIN_BASH/doodle"
+#!/usr/bin/env bash
+# This wrapper script calls Python on doodle.py
+python "${DOODLE_PY_PATH}" "\$@"
+EOF
+
+  chmod +x "$USER_BIN_BASH/doodle"
+
+  echo "Created $USER_BIN_BASH/doodle"
+  echo ""
+  echo "Next steps (bash user):"
+  echo "  1) Ensure $USER_BIN_BASH is in your PATH."
+  echo "  2) Then you can run 'doodle' from any command prompt."
+  echo ""
+  echo "Installation complete."
+
+
 else
   echo "ERROR: Unrecognized OS: ${OS}"
   echo "Please edit this script to handle your environment."
