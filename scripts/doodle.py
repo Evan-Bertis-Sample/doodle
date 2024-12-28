@@ -7,6 +7,15 @@ import importlib
 
 TOOLS_FOLDER = "tools"
 
+DOODLE_ASCII_LOGO = """
+  ┏┓       ┏┳┓
+  ┃┃       ┃┃┃
+┏━┛┣━━┳━━┳━┛┃┃┏━━┓
+┃┏┓┃┏┓┃┏┓┃┏┓┃┃┃┃━┫
+┃┗┛┃┗┛┃┗┛┃┗┛┃┗┫┃━┫
+┗━━┻━━┻━━┻━━┻━┻━━┛
+"""
+
 def main():
     # Path to the 'doodle' directory
     doodle_dir = os.path.join(os.path.dirname(__file__), TOOLS_FOLDER)
@@ -22,6 +31,10 @@ def main():
                 tool_path = os.path.relpath(os.path.join(root, file), doodle_dir)
                 tool_path = TOOLS_FOLDER + os.path.sep + tool_path
                 tool_files.append(tool_path)
+
+
+    print(DOODLE_ASCII_LOGO)
+    print("Build cross platform embedded projects with ease!")
 
     parser = argparse.ArgumentParser(description="Dispatcher for doodle_ sub-tools.")
     subparsers = parser.add_subparsers(dest="tool", help="Sub-commands")
