@@ -34,6 +34,7 @@ doodle_platform_t doodle_platform_create();
 void doodle_platform_destroy(doodle_platform_t platform);
 
 void doodle_platform_add_module(doodle_platform_t *platform, doodle_module_type_t type, doodle_module_t *module);
+void *doodle_platform_get_module(doodle_platform_t *platform, doodle_module_type_t type);
 
 
 #ifdef __cplusplus

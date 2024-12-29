@@ -40,6 +40,11 @@ typedef struct doodle_module_renderer {
 
 } doodle_module_renderer_t;
 
+#define DOODLE_RENDERER_FUNC(renderer, func, ...) \
+    if (renderer && renderer->func) {             \
+        renderer->func(renderer, __VA_ARGS__);    \
+    }
+
 #ifdef __cplusplus
 }
 #endif  // __cplusplus
