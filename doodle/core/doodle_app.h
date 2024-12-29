@@ -4,6 +4,10 @@
 #include <doodle/core/util/doodle_math.h>
 #include <doodle/core/doodle_platform.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // forward declaration
 typedef struct doodle_app doodle_app_t;
 
@@ -29,5 +33,8 @@ void doodle_app_teardown(doodle_app_t *app);
 // This is a specific implementation, which will describe the main function
 doodle_app_desc_t doodle_main(int32_t argc, char *argv[]);
 
+#ifdef __cplusplus
+}
+#endif // __cplusplus
 
 #endif  // __DOODLE_APP_H__

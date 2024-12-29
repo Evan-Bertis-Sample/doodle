@@ -3,6 +3,11 @@
 
 #include <doodle/core/doodle_modules.h>
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef void *doodle_platform_context_t;
 
 typedef struct doodle_platform {
@@ -27,6 +32,13 @@ typedef struct doodle_platform {
 /// @return A new doodle_platform_t object.
 doodle_platform_t doodle_platform_create();
 void doodle_platform_destroy(doodle_platform_t platform);
+
 void doodle_platform_add_module(doodle_platform_t *platform, doodle_module_type_t type, doodle_module_t *module);
+
+
+#ifdef __cplusplus
+}
+#endif // __cplusplus
+
 
 #endif  // __DOODLE_PLATFORM_H__

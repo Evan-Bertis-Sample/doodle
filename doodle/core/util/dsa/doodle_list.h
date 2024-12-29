@@ -3,6 +3,10 @@
 
 #include <doodle/core/util/dsa/doodle_container.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct doodle_list {
     void *__data;
     doodle_container_size_t __size;
@@ -31,5 +35,9 @@ void __doodle_list_shrink(doodle_list_t *list)
 
 #define doodle_list_push_back(list, type, element) \
     __doodle_list_push_back(list, (void *)&element)
+
+#ifdef __cplusplus
+}
+#endif  // __cplusplus
 
 #endif  // __DOODLE_LIST_H__

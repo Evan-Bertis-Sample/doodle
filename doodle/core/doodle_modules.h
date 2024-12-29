@@ -4,6 +4,7 @@
 typedef enum doodle_module_type {
     DOODLE_MODULE_TYPE_INPUT,       // For simple devices like buttons, sensors, etc.
     DOODLE_MODULE_TYPE_OUTPUT,      // For simple devices like LEDs, motors, etc.
+    DOODLE_MODULE_TYPE_PERIPHERAL,  // For more complex, custom devices like robots, drones, etc.
     DOODLE_MODULE_TYPE_RENDERER,    // For display devices like screens, projectors, etc.
     DOODLE_MODULE_TYPE_AUDIO,       // For audio devices like speakers, microphones, etc.
     DOODLE_MODULE_TYPE_FILESYSTEM,  // For file systems, storage devices, etc.

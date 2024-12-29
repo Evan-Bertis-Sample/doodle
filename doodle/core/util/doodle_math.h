@@ -3,6 +3,10 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef float doodle_real_t;
 
 typedef doodle_real_t (*doodle_map_func_t)(doodle_real_t);
@@ -131,5 +135,8 @@ doodle_vec3_t doodle_vec3_from_vec4(doodle_vec4_t v);
 doodle_vec4_t doodle_vec4_from_vec2(doodle_vec2_t v);
 doodle_vec4_t doodle_vec4_from_vec3(doodle_vec3_t v);
 
+#ifdef __cplusplus
+}
+#endif  // __cplusplus
 
 #endif  // __DOODLE_MATH_H__

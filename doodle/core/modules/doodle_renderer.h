@@ -4,6 +4,10 @@
 #include <doodle_modules.h>
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef uint8_t doodle_color_channel_t;
 
 typedef struct doodle_color {
@@ -35,5 +39,9 @@ typedef struct doodle_module_renderer {
     void (*draw_text)(struct doodle_module_renderer *renderer, uint32_t x, uint32_t y, const char *text, doodle_color_t color);
 
 } doodle_module_renderer_t;
+
+#ifdef __cplusplus
+}
+#endif  // __cplusplus
 
 #endif  // __DOODLE_DISPLAY_H__

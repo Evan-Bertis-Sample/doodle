@@ -5,6 +5,10 @@
 
 #include <doodle/core/doodle_modules.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef enum doodle_input_type {
     DOODLE_INPUT_TYPE_NONE,
     DOODLE_INPUT_TYPE_BOOLEAN,     // for things like buttons
@@ -29,6 +33,11 @@ typedef struct doodle_module_input {
 
     void (*update)(struct doodle_module_input *input);
 } doodle_module_input_t;
+
+
+#ifdef __cplusplus
+}
+#endif  // __cplusplus
 
 
 #endif  // __DOODLE_INPUT_H__
