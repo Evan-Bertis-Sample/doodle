@@ -6,6 +6,7 @@
         "doodle_math.h": "c",
         "doodle_platform.h": "c",
         "doodle_app.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "native_renderer.h": "c"
     }
 }

@@ -9,6 +9,7 @@ extern "C" {
 #endif
 
 typedef struct native_renderer_ctx {
+    doodle_module_renderer_config_t config;
     // some stuff regarding imgui...
     // ...
 } native_renderer_ctx_t;
@@ -18,10 +19,10 @@ typedef struct native_renderer_ctx {
  *                           Native Renderer Functions
  *------------------------------------------------------------------------**/
 
-/// @brief Creates a new native renderer module, but does not initialize it.
-/// @param config 
+/// @brief Creates a new native renderer module using IMGUI.
+/// @param config The configuration for the renderer.
 /// @return A new native renderer module.
-doodle_module_renderer_t *native_renderer_interface_create(void *config);
+doodle_module_renderer_t *native_renderer_create(doodle_module_renderer_config_t config);
 
 
 #ifdef __cplusplus

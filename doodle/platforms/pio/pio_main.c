@@ -20,7 +20,7 @@ static void exit_handler(void *ctx) {
 
 void setup() {
     doodle_app_desc_t desc = doodle_main(0, 0);
-    doodle_platform_t platform = doodle_platform_create();
+    doodle_platform_t platform = doodle_platform_create(desc.module_configs);
     g_doodle_app = doodle_app_create(desc, platform);
     doodle_app_init(&g_doodle_app);
     // attach a few interrupt handlers to handle application quitting
