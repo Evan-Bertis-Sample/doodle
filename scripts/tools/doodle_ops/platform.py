@@ -125,7 +125,7 @@ class DoodleBuildPlatform:
             f"-DPLATFORM_CMAKE_FILE={rel_build_src}",
             f"-DPLATFORM_MAIN_FILE={self.platform_info.main}",
             # debug mode
-            f"-DCMAKE_BUILD_TYPE={'Debug' if debug_mode else 'Release'}"
+            f"-DCMAKE_BUILD_TYPE={'Debug' if debug_mode else 'Release'}",
         ]
         try:
             subprocess.run(cmake_command, check=True, cwd=work_dir)

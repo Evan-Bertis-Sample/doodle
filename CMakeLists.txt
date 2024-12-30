@@ -2,11 +2,11 @@
 # --- CMAKE SETUP ---
 
 cmake_minimum_required(VERSION 3.13)
+
 project(${PROJECT} C)
 
 # set the PROJECT_ROOT_DIR variable to the root directory of the project
 set(DOODLE_PROJECT_ROOT_DIR ${CMAKE_SOURCE_DIR}/${PROJECT_CMAKE_DIR})
-
 
 # --- THIS ASSUMES THAT THE PROJECT IS CMAKE AS WELL ---
 
