@@ -46,7 +46,7 @@ static void __native_renderer_draw_text(doodle_module_renderer_t *renderer, uint
 }
 
 
-doodle_module_renderer_t *naitve_renderer_create(doodle_module_renderer_config_t config) {
+doodle_module_renderer_t *native_renderer_create(doodle_module_renderer_config_t config) {
     native_renderer_ctx_t *ctx = (native_renderer_ctx_t *)malloc(sizeof(native_renderer_ctx_t));
     if (!ctx) {
         return NULL;
