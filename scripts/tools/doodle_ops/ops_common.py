@@ -1,6 +1,7 @@
 # ops_common.py
 # Common operations for doodle operation tools, such as building and running
 
+import os
 import argparse
 from tools.doodle_ops.build_util import DoodleBuildUtil
 
@@ -17,7 +18,12 @@ class DoodleOpsCommon:
     @staticmethod
     def clean_args(args):
         if args.project_name is None:
-            args.project_name = args.project_dir
+            if args.project_dir == ".":
+                # if the project name is not specified, use the directory name
+                cwd = os.getcwd()
+                args.project_name = os.path.basename(cwd)
+            else:
+                args.project_name = args.project_dir
 
         return args
 
