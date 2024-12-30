@@ -7,6 +7,7 @@
  *------------------------------------------------------------------------**/
 
 #include <doodle/platforms/native/native_input.h>
+#include <doodle/platforms/native/native_debug.h>
 
 #include <stdlib.h>
 
