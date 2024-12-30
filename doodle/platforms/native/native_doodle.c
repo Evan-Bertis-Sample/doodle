@@ -13,13 +13,15 @@
 #include <doodle/platforms/native/native_input.h>
 
 
-static void native_attach_exit_interrupts(doodle_platform_context_t context, void (*exit_handler)(void *)) {
+static void native_attach_exit_interrupts(void * ctx, void (*exit_handler)(void *)) {
     // no-op
 }
 
 doodle_platform_t doodle_platform_create(void **module_configs) {
     doodle_platform_t platform = {0};
     platform.attach_exit_interrupts = native_attach_exit_interrupts;
+
+    printf("Creating platform\n");
 
     doodle_platform_add_module(
         &platform,
@@ -33,6 +35,8 @@ doodle_platform_t doodle_platform_create(void **module_configs) {
         DOODLE_MODULE_TYPE_INPUT,
         (doodle_module_t *)native_input_create(
             *(doodle_module_input_config_t *)(module_configs[DOODLE_MODULE_TYPE_INPUT])));
+
+    printf("Platform created\n");
 
     return platform;
 }

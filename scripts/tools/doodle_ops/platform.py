@@ -54,11 +54,11 @@ class DoodleBuildPlatform:
         self.build_info = build_info
         self.platform_info = platform_info
 
-    def build_platform(self, project_path: str, project_name: str):
+    def build_platform(self, project_path: str, project_name: str, debug_mode: bool):
         if self.build_info.build_type == DoodleBuildPlatformType.CMAKE_BUILD:
-            self.__build_platform_cmake(project_path, project_name)
+            self.__build_platform_cmake(project_path, project_name, debug_mode)
         elif self.build_info.build_type == DoodleBuildPlatformType.PYTHON_BUILD:
-            self.__build_platform_custom(project_path, project_name)
+            self.__build_platform_custom(project_path, project_name, debug_mode)
 
     def run_platform(self, project_path: str, project_name: str):
         if self.build_info.build_type == DoodleBuildPlatformType.CMAKE_BUILD:
@@ -79,7 +79,7 @@ class DoodleBuildPlatform:
         else:
             print(f"Build directory {build_dir} does not exist, nothing to clean)")
 
-    def __build_platform_cmake(self, project_path: str, project_name: str):
+    def __build_platform_cmake(self, project_path: str, project_name: str, debug_mode: bool):
         print("Doodle Build System (PYTHON BUILD)")
 
         # 1. Figure out platform_name (default = "native")
@@ -123,6 +123,8 @@ class DoodleBuildPlatform:
             f"-DPROJECT_CMAKE_DIR={rel_project_dir}",
             f"-DPLATFORM_CMAKE_FILE={rel_build_src}",
             f"-DPLATFORM_MAIN_FILE={self.platform_info.main}",
+            # debug mode
+            f"-DCMAKE_BUILD_TYPE={'Debug' if debug_mode else 'Release'}"
         ]
         try:
             subprocess.run(cmake_command, check=True, cwd=work_dir)
@@ -196,7 +198,7 @@ class DoodleBuildPlatform:
         return module
         
 
-    def __build_platform_custom(self, project_path: str, project_name: str):
+    def __build_platform_custom(self, project_path: str, project_name: str, debug_mode: bool):
         print("Building project with custom build script")
         build_dir = DoodleBuildPlatform.get_build_dir(self.platform_info.name, project_path)
         # script should be at
@@ -218,7 +220,8 @@ class DoodleBuildPlatform:
             module.build(
                 project_path,
                 project_name,
-                build_dir
+                build_dir,
+                debug_mode
             )
         except Exception as e:
             print(f"Error: 'build' function in {build_script} raised an exception:\n{e}")

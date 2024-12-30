@@ -7,7 +7,7 @@ from tools.tool_utils import DoodleToolUtil
 MAIN_FILE_PATH = os.path.join(os.path.dirname(__file__), "pio_main.c")
 
 
-def build(project_src_path: str, project_name: str, build_output_dir: str):
+def build(project_src_path: str, project_name: str, build_output_dir: str, debug_mode):
     """
     Builds a PlatformIO project from a Doodle project.
 

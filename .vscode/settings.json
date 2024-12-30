@@ -7,6 +7,7 @@
         "doodle_platform.h": "c",
         "doodle_app.h": "c",
         "stdio.h": "c",
-        "native_renderer.h": "c"
+        "native_renderer.h": "c",
+        "doodle_modules.h": "c"
     }
 }

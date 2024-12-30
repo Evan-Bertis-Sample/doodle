@@ -7,6 +7,7 @@
  *------------------------------------------------------------------------**/
 
 #include <doodle/platforms/native/native_renderer.h>
+#include <stdlib.h>
 
 static void __native_renderer_destroy(void *module) {
     native_renderer_ctx_t *ctx = (native_renderer_ctx_t *)module;
@@ -74,6 +75,8 @@ doodle_module_renderer_t *native_renderer_create(doodle_module_renderer_config_t
         .draw_circle = __native_renderer_draw_circle,
         .draw_text = __native_renderer_draw_text,
     };
+
+    printf("Renderer created\n");
 
     return renderer;
 }
