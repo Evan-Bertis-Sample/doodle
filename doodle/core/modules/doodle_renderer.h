@@ -1,7 +1,7 @@
 #ifndef __DOODLE_DISPLAY_H__
 #define __DOODLE_DISPLAY_H__
 
-#include <doodle_modules.h>
+#include <doodle/core/doodle_modules.h>
 #include <stdint.h>
 
 #ifdef __cplusplus
@@ -28,7 +28,7 @@ typedef struct doodle_module_renderer_config {
 } doodle_module_renderer_config_t;
 
 typedef struct doodle_module_renderer {
-    doodle_module_t module;
+doodle_module_t module;
     doodle_module_renderer_config_t config;
 
     void (*clear)(struct doodle_module_renderer *renderer, doodle_color_t color);

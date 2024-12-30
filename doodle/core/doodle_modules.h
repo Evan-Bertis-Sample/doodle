@@ -26,7 +26,7 @@ typedef void *doodle_module_context_t;
 typedef struct doodle_module {
     doodle_module_type_t type;
     doodle_module_context_t context;
-    void (*destroy)(struct doodle_module *module);
+    void (*destroy)(void *module);
     uint8_t checksum; // this is used to verify the module is valid
 } doodle_module_t;
 
@@ -35,7 +35,7 @@ typedef struct doodle_module {
 /// @param context The context for the module.
 /// @param destroy The function to call when the module is destroyed.
 /// @return 
-doodle_module_t doodle_module_create(doodle_module_type_t type, doodle_module_context_t context, void (*destroy)(doodle_module_t *module));
+doodle_module_t doodle_module_create(doodle_module_type_t type, doodle_module_context_t context, void (*destroy)(void *module));
 
 /// @brief Verifies that the module is valid.
 /// @param module The module to verify. It is important that the first member of the module is the doodle_module_t struct.

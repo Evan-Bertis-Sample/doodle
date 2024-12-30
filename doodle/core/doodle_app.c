@@ -29,3 +29,7 @@ void doodle_app_teardown(doodle_app_t *app) {
 void doodle_app_loop(doodle_app_t *app) {
     app->desc.loop(app);
 }
+
+void *doodle_app_get_module(doodle_app_t *app, doodle_module_type_t type) {
+    return doodle_platform_get_module(&app->platform, type);
+}

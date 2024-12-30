@@ -31,6 +31,8 @@ void doodle_app_init(doodle_app_t *app);
 void doodle_app_loop(doodle_app_t *app);
 void doodle_app_teardown(doodle_app_t *app);
 
+void *doodle_app_get_module(doodle_app_t *app, doodle_module_type_t type);
+
 // This is a specific implementation, which will describe the main function
 doodle_app_desc_t doodle_main(int32_t argc, char *argv[]);
 
