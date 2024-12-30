@@ -6,7 +6,7 @@
  *  
  *------------------------------------------------------------------------**/
 
-#include <doodle/core/doodle_debug.h>
+#include <doodle/platforms/native/native_debug.h>
 #include <doodle/platforms/native/native_renderer.h>
 #include <stdlib.h>
 
@@ -49,8 +49,11 @@ static void __native_renderer_draw_text(doodle_module_renderer_t *renderer, uint
 
 
 doodle_module_renderer_t *native_renderer_create(doodle_module_renderer_config_t config) {
+    NATIVE_LOG("Creating native renderer\n");
+
     native_renderer_ctx_t *ctx = (native_renderer_ctx_t *)malloc(sizeof(native_renderer_ctx_t));
     if (!ctx) {
+        NATIVE_FATAL_ERROR("Failed to allocate memory for native renderer\n");
         return NULL;
     }
 
@@ -60,9 +63,12 @@ doodle_module_renderer_t *native_renderer_create(doodle_module_renderer_config_t
 
     doodle_module_renderer_t *renderer = (doodle_module_renderer_t *)malloc(sizeof(doodle_module_renderer_t));
     if (!renderer) {
+        NATIVE_FATAL_ERROR("Failed to allocate memory for native renderer\n");
         free(ctx);
         return NULL;
     }
+
+    NATIVE_LOG("Creating native renderer module\n"); 
 
     doodle_module_t module = doodle_module_create(DOODLE_MODULE_TYPE_RENDERER, ctx, __native_renderer_destroy);
 
@@ -76,6 +82,8 @@ doodle_module_renderer_t *native_renderer_create(doodle_module_renderer_config_t
         .draw_circle = __native_renderer_draw_circle,
         .draw_text = __native_renderer_draw_text,
     };
+
+    NATIVE_LOG("Native renderer created\n");
 
     return renderer;
 }

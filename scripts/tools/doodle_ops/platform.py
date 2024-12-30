@@ -2,6 +2,7 @@ from enum import Enum
 from typing import List
 import os
 import sys
+import shutil
 
 from tools.tool_utils import DoodleModuleType, DoodleToolUtil
 import subprocess
@@ -141,6 +142,12 @@ class DoodleBuildPlatform:
         try:
             subprocess.run(build_command, check=True, cwd=work_dir)
         except subprocess.CalledProcessError as e:
+            cli_width = shutil.get_terminal_size().columns
+
+            print("")
+            print("=" * cli_width)
+            print("")
+
             print(f"Error building project: {e}")
             return
 
@@ -177,6 +184,12 @@ class DoodleBuildPlatform:
         try:
             subprocess.run(run_command, check=True, cwd=work_dir)
         except subprocess.CalledProcessError as e:
+            cli_width = shutil.get_terminal_size().columns
+
+            print("")
+            print("=" * cli_width)
+            print("")
+
             print(f"Error running project: {e}")
             return
 

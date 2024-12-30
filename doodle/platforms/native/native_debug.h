@@ -5,7 +5,11 @@
 extern "C" {
 #endif
 
+#include <stdlib.h> // for exit()
+#include <stdio.h>  // for printf()
+
 #define NATIVE_LOG_ENABLED
+#define NATIVE_ALLOW_FATAL_ERRORS
 #define NATIVE_MSG_PREFIX "[doodle-platform][native]"
 
 #ifdef NATIVE_LOG_ENABLED
@@ -14,6 +18,12 @@ extern "C" {
 #else
 #define NATIVE_LOG(...) void(0)
 #define NATIVE_LOG_ERROR(...) void(0)
+#endif
+
+#ifdef NATIVE_ALLOW_FATAL_ERRORS
+#define NATIVE_FATAL_ERROR(...) { NATIVE_LOG_ERROR(__VA_ARGS__); exit(1); }
+#else
+#define NATIVE_FATAL_ERROR(...) NATIVE_LOG_ERROR(__VA_ARGS__)
 #endif
 
 #ifdef __cplusplus
