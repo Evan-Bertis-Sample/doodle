@@ -1,6 +1,3 @@
 [submodule "doodle/platforms/adafruit/adafruit-gfx"]
 	path = doodle/platforms/adafruit/adafruit-gfx
 	url = https://github.com/adafruit/Adafruit-GFX-Library.git
-[submodule "doodle/platforms/native/imgui"]
-	path = doodle/platforms/native/imgui
-	url = https://github.com/ocornut/imgui.git
