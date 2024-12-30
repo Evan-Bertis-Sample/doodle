@@ -18,14 +18,21 @@ static void native_attach_exit_interrupts(void *ctx, void (*exit_handler)(void *
 }
 
 doodle_platform_t doodle_platform_create(void **module_configs) {
+    NATIVE_LOG("Module configs at %p\n", module_configs);
+
+    for (uint32_t i = 0; i < DOODLE_MODULE_TYPE_COUNT; i++) {
+        NATIVE_LOG("Module config %d: %p\n", i, module_configs[i]);
+    }
+
     doodle_platform_t platform = {0};
     platform.attach_exit_interrupts = native_attach_exit_interrupts;
 
     NATIVE_LOG("Creating platform\n");
 
     NATIVE_LOG("Adding renderer module\n");
+    void *renderer_config = module_configs[DOODLE_MODULE_TYPE_RENDERER];
     doodle_module_renderer_t *renderer = native_renderer_create(
-        *(doodle_module_renderer_config_t *)(module_configs[DOODLE_MODULE_TYPE_RENDERER]));
+        *(doodle_module_renderer_config_t *)renderer_config);
 
     doodle_platform_add_module(
         &platform,

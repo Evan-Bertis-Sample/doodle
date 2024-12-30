@@ -27,7 +27,7 @@ typedef struct doodle_module {
     doodle_module_type_t type;
     doodle_module_context_t context;
     void (*destroy)(void *module);
-    uint8_t checksum; // this is used to verify the module is valid
+    uint32_t checksum; // this is used to verify the module is valid
 } doodle_module_t;
 
 /// @brief Function that must be called when creating a new module. It creates a checksum for the module.

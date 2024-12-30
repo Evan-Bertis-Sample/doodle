@@ -28,7 +28,7 @@ typedef struct doodle_module_renderer_config {
 } doodle_module_renderer_config_t;
 
 typedef struct doodle_module_renderer {
-doodle_module_t module;
+    doodle_module_t module;
     doodle_module_renderer_config_t config;
 
     void (*clear)(struct doodle_module_renderer *renderer, doodle_color_t color);
