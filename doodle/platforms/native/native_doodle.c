@@ -31,6 +31,17 @@ doodle_platform_t doodle_platform_create(void **module_configs) {
 
     NATIVE_LOG("Adding renderer module\n");
     void *renderer_config = module_configs[DOODLE_MODULE_TYPE_RENDERER];
+
+    if (!renderer_config) {
+        NATIVE_LOG_ERROR("Renderer config is NULL, defaulting to default\n");
+        doodle_module_renderer_config_t config = {
+            .width = 800,
+            .height = 600,
+        };
+        renderer_config = &config;
+
+        return platform;
+    }
     doodle_module_renderer_t *renderer = native_renderer_create(
         *(doodle_module_renderer_config_t *)renderer_config);
 
@@ -39,14 +50,20 @@ doodle_platform_t doodle_platform_create(void **module_configs) {
         DOODLE_MODULE_TYPE_RENDERER,
         (doodle_module_t *)renderer);
 
-    NATIVE_LOG("Adding input module\n");
-    doodle_platform_add_module(
-        &platform,
-        DOODLE_MODULE_TYPE_INPUT,
-        (doodle_module_t *)native_input_create(
-            *(doodle_module_input_config_t *)(module_configs[DOODLE_MODULE_TYPE_INPUT])));
 
-    printf("Platform created\n");
+    NATIVE_LOG("Adding input module\n");
+    void *input_config = module_configs[DOODLE_MODULE_TYPE_INPUT];
+    if (!input_config) {
+        NATIVE_LOG_ERROR("Input config is NULL, defaulting to default\n");
+        doodle_module_input_config_t config = {
+            .inputs = NULL,
+            .input_count = 0,
+        };
+        input_config = &config;
+    }
+    
+
+    NATIVE_LOG("Platform created\n");
 
     return platform;
 }

@@ -21,6 +21,7 @@ static void __native_input_destroy(void *module) {
 doodle_module_input_t *native_input_create(doodle_module_input_config_t config) {
     native_input_ctx_t *ctx = (native_input_ctx_t *)malloc(sizeof(native_input_ctx_t));
     if (!ctx) {
+        NATIVE_FATAL_ERROR("Failed to allocate memory for native input\n");
         return NULL;
     }
 
@@ -31,6 +32,7 @@ doodle_module_input_t *native_input_create(doodle_module_input_config_t config) 
     doodle_module_input_t *input = (doodle_module_input_t *)malloc(sizeof(doodle_module_input_t));
     if (!input) {
         free(ctx);
+        NATIVE_FATAL_ERROR("Failed to allocate memory for native input\n");
         return NULL;
     }
 
