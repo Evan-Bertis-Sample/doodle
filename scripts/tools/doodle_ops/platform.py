@@ -80,7 +80,7 @@ class DoodleBuildPlatform:
             print(f"Build directory {build_dir} does not exist, nothing to clean)")
 
     def __build_platform_cmake(self, project_path: str, project_name: str, debug_mode: bool):
-        print("Doodle Build System (PYTHON BUILD)")
+        # print("Doodle Build System (PYTHON BUILD)")
 
         # 1. Figure out platform_name (default = "native")
         platform_name = self.platform_info.name if self.platform_info.name else "native"
@@ -98,8 +98,8 @@ class DoodleBuildPlatform:
         build_dir = DoodleBuildPlatform.get_build_dir(platform_name, project_dir)
 
         rel_project_dir = os.path.relpath(project_dir, DoodleToolUtil.get_doodle_parent_dir())
-        print(f"Building project {project_name} in {project_dir} with platform {platform_name}")
-        print("Relative project dir: ", rel_project_dir)
+        # print(f"Building project {project_name} in {project_dir} with platform {platform_name}")
+        # print("Relative project dir: ", rel_project_dir)
 
         # replace backslashes with forward slashes for CMake
         rel_project_dir = rel_project_dir.replace("\\", "/")
@@ -147,7 +147,7 @@ class DoodleBuildPlatform:
         print(f"Build complete. The executable should be in {build_dir}")
 
     def __run_platform_cmake(self, project_path: str, project_name: str):
-        print("Doodle Build System (PYTHON BUILD)")
+        # print("Doodle Build System (PYTHON BUILD)")
 
         # 1. Figure out platform_name (default = "native")
         platform_name = self.platform_info.name if self.platform_info.name else "native"
@@ -165,8 +165,8 @@ class DoodleBuildPlatform:
         build_dir = DoodleBuildPlatform.get_build_dir(platform_name, project_dir)
 
         rel_project_dir = os.path.relpath(project_dir, DoodleToolUtil.get_doodle_parent_dir())
-        print(f"Running project {project_name} in {project_dir} with platform {platform_name}")
-        print("Relative project dir: ", rel_project_dir)
+        # print(f"Running project {project_name} in {project_dir} with platform {platform_name}")
+        # print("Relative project dir: ", rel_project_dir)
 
         work_dir = DoodleToolUtil.get_doodle_parent_dir()
 
@@ -199,7 +199,7 @@ class DoodleBuildPlatform:
         
 
     def __build_platform_custom(self, project_path: str, project_name: str, debug_mode: bool):
-        print("Building project with custom build script")
+        # print("Building project with custom build script")
         build_dir = DoodleBuildPlatform.get_build_dir(self.platform_info.name, project_path)
         # script should be at
         # <doodle_platforms_dir>/<platform_name>/doodle.py
@@ -233,8 +233,8 @@ class DoodleBuildPlatform:
         # to the script
         # the script must include a "build" function that takes in these parameters
         # and a "run" function that runs/uploads the project
-        print("Doodle Build System (CUSTOM BUILD)")
-        print("Running project with custom build script")
+        # print("Doodle Build System (CUSTOM BUILD)")
+        # print("Running project with custom build script")
         build_dir = DoodleBuildPlatform.get_build_dir(self.platform_info.name, project_path)
         # script should be at
         # <doodle_platforms_dir>/<platform_name>/doodle.py

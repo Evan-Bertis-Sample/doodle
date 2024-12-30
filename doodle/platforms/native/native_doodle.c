@@ -9,6 +9,7 @@
 #include <doodle/core/doodle_platform.h>
 
 // platform-specific includes
+#include <doodle/platforms/native/native_debug.h>
 #include <doodle/platforms/native/native_renderer.h>
 #include <doodle/platforms/native/native_input.h>
 
@@ -21,7 +22,7 @@ doodle_platform_t doodle_platform_create(void **module_configs) {
     doodle_platform_t platform = {0};
     platform.attach_exit_interrupts = native_attach_exit_interrupts;
 
-    printf("Creating platform\n");
+    NATIVE_LOG("Creating platform\n");
 
     doodle_platform_add_module(
         &platform,

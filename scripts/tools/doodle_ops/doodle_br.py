@@ -1,5 +1,6 @@
 # doodle_br.py
 
+import shutil
 from tools.doodle_ops.build_util import DoodleBuildUtil
 from tools.doodle_ops.ops_common import DoodleOpsCommon
 
@@ -22,6 +23,14 @@ def main(args):
 
     debug_mode = args.debug
     platform.build_platform(args.project_dir, args.project_name, debug_mode)
+
+    print("")
+
+    # get the width of the terminal
+    terminal_width = shutil.get_terminal_size().columns
+
+    print("=" * terminal_width)
+    print("")
 
     print(
         f"Running project {args.project_name} with platform {args.platform_name} using {platform.build_info.build_type.name} method"

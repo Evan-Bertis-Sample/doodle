@@ -6,6 +6,7 @@
  *  
  *------------------------------------------------------------------------**/
 
+#include <doodle/core/doodle_debug.h>
 #include <doodle/platforms/native/native_renderer.h>
 #include <stdlib.h>
 
@@ -75,8 +76,6 @@ doodle_module_renderer_t *native_renderer_create(doodle_module_renderer_config_t
         .draw_circle = __native_renderer_draw_circle,
         .draw_text = __native_renderer_draw_text,
     };
-
-    printf("Renderer created\n");
 
     return renderer;
 }
