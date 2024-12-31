@@ -6,6 +6,12 @@ extern "C" {
 #endif
 
 #include <doodle/core/doodle_modules.h>
+#include <cimgui.h>
+
+typedef struct native_gui_state {
+    
+} native_gui_state_t;
+
 
 #ifdef __cplusplus
 }
