@@ -1,3 +1,9 @@
+<div align="center">
+  <img src="docs/doodle_logo.png" width=25%>
+  <br>
+</div>
+
+
 # doodle
 
 A platform-agnostic, lightweight framework and build tool for building embedded applications in C/C++, intended for user-facing applications in embedded systems. Originally intended for `Northwestern Formula Racing`'s 2025 car dashboard, but open to all.
