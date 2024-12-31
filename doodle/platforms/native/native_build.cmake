@@ -15,10 +15,10 @@ set(CIMGUI_DIR ${PLATFORM_DIR}/cimgui)
 # general settings
 if (EXISTS ${CIMGUI_DIR}/imgui/backends)
     message(STATUS "Using imgui/backends")
-	set(BACKENDS_DIR ${CIMGUI_DIR}/imgui/backends/)
+	set(BACKENDS_DIR ${CIMGUI_DIR}/imgui/backends)
 else()
     message(STATUS "Using backends")
-	set(BACKENDS_DIR ${CIMGUI_DIR}/backends/)
+	set(BACKENDS_DIR ${CIMGUI_DIR}/backends)
 endif()
 
 if (EXISTS ${CIMGUI_DIR}imgui/imgui_tables.cpp)
@@ -33,15 +33,15 @@ add_definitions("-DIMGUI_DISABLE_OBSOLETE_FUNCTIONS=1")
 
 include_directories(${CIMGUI_DIR})
 set(IMGUI_SOURCES 
-${CIMGUI_DIR}cimgui.cpp 
-${CIMGUI_DIR}imgui/imgui.cpp 
-${CIMGUI_DIR}imgui/imgui_draw.cpp 
-${CIMGUI_DIR}imgui/imgui_demo.cpp 
-${CIMGUI_DIR}imgui/imgui_widgets.cpp
+${CIMGUI_DIR}/cimgui.cpp 
+${CIMGUI_DIR}/imgui/imgui.cpp 
+${CIMGUI_DIR}/imgui/imgui_draw.cpp 
+${CIMGUI_DIR}/imgui/imgui_demo.cpp 
+${CIMGUI_DIR}/imgui/imgui_widgets.cpp
 ${TABLES_SOURCE} 
 )
 
-set(IMGUI_LIBRARIES )
+set(IMGUI_LIBRARIES "")
 
 if (WIN32)
     add_definitions("-DIMGUI_IMPL_API=extern \"C\" __declspec\(dllexport\)")
@@ -62,7 +62,7 @@ if(IMGUI_FREETYPE)
 endif(IMGUI_FREETYPE)
 
 # dx11
-list(APPEND IMGUI_SOURCES ${BACKENDS_DIR}imgui_impl_dx11.cpp)
+list(APPEND IMGUI_SOURCES ${BACKENDS_DIR}/imgui_impl_dx11.cpp)
 
 if(WIN32)
        list(APPEND IMGUI_LIBRARIES opengl32)
@@ -71,7 +71,7 @@ else(WIN32) # Unix
 endif(WIN32)
 
 # GLFW
-list(APPEND IMGUI_SOURCES ${BACKENDS_DIR}imgui_impl_glfw.cpp)
+list(APPEND IMGUI_SOURCES ${BACKENDS_DIR}/imgui_impl_glfw.cpp)
 
 set(GLFW_VERSION 3.3.8)
 include(FetchContent)
@@ -97,6 +97,9 @@ install(TARGETS glfw RUNTIME DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
 )
 #FIND_PACKAGE(glfw3 PATHS "C:/LuaGL/gitsources/BUILDS/GLFW/install")
 
+# set language 
+
+
 if (NOT STATIC_BUILD)
   add_library(cimgui SHARED ${IMGUI_SOURCES})
 else()
@@ -104,9 +107,11 @@ else()
 endif()
 
 target_link_libraries(cimgui ${IMGUI_LIBRARIES} glfw)
-
+set_target_properties(cimgui PROPERTIES C_STANDARD 99)
+set_target_properties(cimgui PROPERTIES CXX_STANDARD 11)
+set_target_properties(cimgui PROPERTIES LINKER_LANGUAGE C)
 
 # using library
 include_directories(${CIMGUI_DIR}/generator/output/)
 target_compile_definitions(${PROJECT_NAME} PUBLIC -DCIMGUI_USE_DX11 -DCIMGUI_USE_GLFW)
-target_link_libraries(${PROJECT_NAME} d3d11 d3dcompiler.lib cimgui)
+target_link_libraries(${PROJECT_NAME} PRIVATE d3d11 d3dcompiler.lib cimgui)
