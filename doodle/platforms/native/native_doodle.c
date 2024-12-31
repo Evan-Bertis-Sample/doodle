@@ -13,6 +13,10 @@
 #include <doodle/platforms/native/native_input.h>
 #include <doodle/platforms/native/native_renderer.h>
 
+// this has some cpp symbols, so we need to wrap it in extern "C"
+#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
+#include <cimgui/cimgui.h>
+
 static void native_attach_exit_interrupts(void *ctx, void (*exit_handler)(void *)) {
     // no-op
 }

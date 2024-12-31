@@ -49,7 +49,7 @@ set(IMGUI_LIBRARIES "")
 
 if (WIN32)
     add_definitions("-DIMGUI_IMPL_API=extern \"C\" __declspec\(dllexport\)")
-else(WIN32)
+elseif(WIN32)
     add_definitions("-DIMGUI_IMPL_API=extern \"C\" ")
 endif(WIN32)
 
