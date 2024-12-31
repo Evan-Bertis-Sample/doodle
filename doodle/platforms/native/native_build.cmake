@@ -10,6 +10,10 @@ file(GLOB PLATFORM_HEADERS
 )
 
 
+if(WIN32) # to mingw work as all the others
+	set(CMAKE_SHARED_LIBRARY_PREFIX "")
+endif(WIN32)
+
 set(CIMGUI_DIR ${PLATFORM_DIR}/cimgui)
 
 # general settings
@@ -28,7 +32,7 @@ else()
 endif()
 
 include_directories(${CIMGUI_DIR}/imgui)
-add_definitions("-DIMGUI_USER_CONFIG=\"../cimconfig.h\"")
+add_definitions("-DIMGUI_USER_CONFIG=\"${CIMGUI_DIR}/cimconfig.h\"")
 add_definitions("-DIMGUI_DISABLE_OBSOLETE_FUNCTIONS=1")
 
 include_directories(${CIMGUI_DIR})
@@ -98,13 +102,7 @@ install(TARGETS glfw RUNTIME DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
 #FIND_PACKAGE(glfw3 PATHS "C:/LuaGL/gitsources/BUILDS/GLFW/install")
 
 # set language 
-
-
-if (NOT STATIC_BUILD)
-  add_library(cimgui SHARED ${IMGUI_SOURCES})
-else()
-  add_library(cimgui STATIC ${IMGUI_SOURCES})
-endif()
+add_library(cimgui STATIC ${IMGUI_SOURCES})
 
 target_link_libraries(cimgui ${IMGUI_LIBRARIES} glfw)
 set_target_properties(cimgui PROPERTIES C_STANDARD 99)
