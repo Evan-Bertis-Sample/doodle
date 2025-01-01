@@ -112,4 +112,4 @@ set_target_properties(cimgui PROPERTIES LINKER_LANGUAGE C)
 # using library
 include_directories(${CIMGUI_DIR}/generator/output/)
 target_compile_definitions(${PROJECT_NAME} PUBLIC -DCIMGUI_USE_DX11 -DCIMGUI_USE_GLFW)
-target_link_libraries(${PROJECT_NAME} PRIVATE d3d11 d3dcompiler.lib cimgui)
+target_link_libraries(${PROJECT_NAME} PRIVATE d3d11 glfw d3dcompiler.lib cimgui)

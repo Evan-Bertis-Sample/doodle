@@ -10,6 +10,7 @@
         "native_renderer.h": "c",
         "doodle_modules.h": "c",
         "native_debug.h": "c",
-        "cimgui.h": "c"
+        "cimgui.h": "c",
+        "glfw3.h": "c"
     }
 }
