@@ -21,13 +21,28 @@ add_executable(${PROJECT_NAME})
 
 # --- COMPILING DOODLE CORE ---
 
+message(STATUS "Building doodle core")
+
 set(DOODLE_PARENT_DIR ${CMAKE_SOURCE_DIR})
-message(STATUS "DOODLE_PARENT_DIR: ${DOODLE_PARENT_DIR}")
 # Collect all core .c and .h files recursively, through the core directory
 file(GLOB_RECURSE DOODLE_CORE_SOURCES "${DOODLE_PARENT_DIR}/doodle/core/*.c")
 file(GLOB_RECURSE DOODLE_CORE_HEADERS "${DOODLE_PARENT_DIR}/doodle/core/*.h")
 
+# declare the doodle library as a static library
+add_library(doodle STATIC 
+    ${DOODLE_CORE_SOURCES}
+    ${DOODLE_CORE_HEADERS}
+)
+
+# also set the C standard to C99
+set_property(TARGET doodle PROPERTY C_STANDARD 99)
+
+# add the core sources to the doodle library
+target_sources(doodle PRIVATE ${DOODLE_CORE_SOURCES} ${DOODLE_CORE_HEADERS})
+
 # --- COMPILING PLATFORM : This assumes that the platform is CMake as well ---
+
+message(STATUS "Building platform ${PLATFORM_NAME}")
 
 set(PLATFORM_ROOT_DIR ${DOODLE_PARENT_DIR}/doodle/platforms)
 
@@ -36,6 +51,16 @@ set(PLATFORM_DIR ${PLATFORM_ROOT_DIR}/${PLATFORM_NAME})
 if(NOT EXISTS ${PLATFORM_DIR})
     message(FATAL_ERROR "Specified platform '${PLATFORM_NAME}' not found at ${PLATFORM_DIR}")
 endif()
+
+# set the includes for doodle
+target_include_directories(doodle PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${PLATFORM_DIR}
+)
+
+# declare the platform as a library
+add_library(${PLATFORM_NAME} STATIC)
 
 if(EXISTS ${PLATFORM_CMAKE_FILE})
     # The platform.cmake file should define at least:
@@ -49,27 +74,28 @@ else()
     message(STATUS "No platform-specific configuration found, using default sources from ${PLATFORM_DIR}")
     file(GLOB PLATFORM_SOURCES "${PLATFORM_DIR}/*.c")
     file(GLOB PLATFORM_HEADERS "${PLATFORM_DIR}/*.h")
+    
+    # include the platform directory for headers
+    target_include_directories(${PLATFORM_NAME} PUBLIC ${PLATFORM_DIR})
+
+    # add the platform sources to the platform library
+    target_sources(${PLATFORM_NAME} PRIVATE ${PLATFORM_SOURCES})
+
 endif()
+
+message("Finished compiling platform ${PLATFORM_NAME}")
 
 
 # --- ADDING SOURCES TO THE DOODLE LIBRARY ---
 
-add_library(doodle STATIC
-    ${DOODLE_CORE_SOURCES}
-    ${DOODLE_CORE_HEADERS}
-    ${PLATFORM_SOURCES}
-    ${PLATFORM_HEADERS}
-)
+message(STATUS "Adding core sources to doodle library")
 
-# also set the C standard to C99
-set_property(TARGET doodle PROPERTY C_STANDARD 99)
 
-target_include_directories(doodle PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${PLATFORM_DIR}
-)
 
+message(STATUS "Linking platform ${PLATFORM_NAME} to doodle library")
+
+# link the doodle library to the platform library
+target_link_libraries(doodle PUBLIC ${PLATFORM_NAME})
 
 # --- LINKING PLATFORM-SPECIFIC MAIN FILE ---
 # Because the platform main file is not part of the doodle library, or the project,

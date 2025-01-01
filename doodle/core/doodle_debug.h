@@ -13,17 +13,18 @@ extern "C" {
 #define DOODLE_APP_LOG_ENABLED
 #define DOODLE_APP_ALLOW_FATAL_ERRORS
 
+#define DOODLE_STR_HELPER(x) #x
+#define DOODLE_STR(x) DOODLE_STR_HELPER(x)
 
 #ifdef __clang__
 #define DOODLE_FILENAME __FILE_NAME__
 #elif __GNUC__
-#define DOODLE_FILENAME __builtin_strrchr(__FILE__, '/') ? __builtin_strrchr(__FILE__, '/') + 1 : __FILE__
+#define DOODLE_FILENAME_HELPER (__builtin_strrchr(__FILE__, '/') ? __builtin_strrchr(__FILE__, '/') + 1 : __FILE__) 
+#define DOODLE_FILENAME DOODLE_STR(DOODLE_FILENAME_HELPER)
 #else
 #define DOODLE_FILENAME __FILE__
 #endif
 
-#define DOODLE_STR_HELPER(x) #x
-#define DOODLE_STR(x) DOODLE_STR_HELPER(x)
 #define DOODLE_LINE __LINE__
 
 #define DOODLE_PREFIX_COLOR "\033[1;34m"
