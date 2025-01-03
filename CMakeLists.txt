@@ -91,7 +91,6 @@ message("Finished compiling platform ${PLATFORM_NAME}")
 message(STATUS "Adding core sources to doodle library")
 
 
-
 message(STATUS "Linking platform ${PLATFORM_NAME} to doodle library")
 
 # link the doodle library to the platform library

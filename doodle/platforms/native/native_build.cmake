@@ -119,7 +119,7 @@ set_target_properties(cimgui PROPERTIES LINKER_LANGUAGE C)
 # using library
 target_compile_definitions(${PLATFORM_NAME} PUBLIC -DCIMGUI_USE_DX11 -DCIMGUI_USE_GLFW)
 
-target_link_libraries(${PLATFORM_NAME} PRIVATE d3d11 d3dcompiler.lib cimgui glfw)
+target_link_libraries(${PLATFORM_NAME} PRIVATE d3d11 d3dcompiler.lib cimgui glfw doodle)
 
 
 # print out all of the include directories for the project
