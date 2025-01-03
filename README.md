@@ -72,46 +72,24 @@ This will install the doodle CLI for use globally. You may have to follow the in
 doodle create project <project_name> <path>
 ```
 
-This will create a simple doodle project, which looks like this:
-
-```c
-#include <stdio.h>
-
-#include <doodle/core/doodle_platform.h>
-#include <doodle/core/doodle_app.h>
-
-static void blank_setup(void) {
-    printf("setup\n");
-}
-
-static void blank_loop(void) {
-    printf("loop\n");
-}
-
-static void blank_teardown(void) {
-    printf("teardown\n");
-}
-
-// This describes the entry point for the application. The actual
-// entry point is defined in the platform implementation.
-// For example, the native platform uses a standard C entry point.
-// While the Arduino platform uses the setup and loop functions.
-doodle_app_desc_t doodle_main(int32_t argc, char *argv[]) {
-    doodle_app_desc_t desc = {
-        .name = "blank",
-        .display_size = doodle_vec2_make(800.0f, 600.0f),
-        .setup = blank_setup,
-        .loop = blank_loop,
-        .teardown = blank_teardown,
-    };
-    return desc;
-}
-```
-
-This is a simple doodle application that prints "setup", "loop", and "teardown" to the console. You can build and run this application using the `doodle` CLI. It also comes with all of the necessary .ini files that `doodle` needs to build and run your application. Documentation on this will be coming soon.
+This will create a simple doodle application that prints "setup", "loop", and "teardown" to the console. You can build and run this application using the `doodle` CLI. It also comes with all of the necessary .ini files that `doodle` needs to build and run your application. Documentation on this will be coming soon.
 
 ```bash
 doodle build native .
 ```
 
 This commmand will build the project for the native platform, and run it. You can also build for other platforms, like `pio` which will build for the PlatformIO platform.
+
+Once you build the doodle app, you can run using:
+
+```bash
+doodle run native .
+```
+
+Alternatively, you can build and run the application in a single command with:
+
+```bash
+doodle br native .
+```
+
+Swap `native` out with your platform you would like to build for.
