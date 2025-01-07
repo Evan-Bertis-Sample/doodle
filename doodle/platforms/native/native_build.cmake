@@ -43,16 +43,18 @@ else()
     set(TABLES_SOURCE "")
 endif()
 
-include_directories(${CIMGUI_DIR}/imgui)
 add_definitions("-DIMGUI_USER_CONFIG=\"${CIMGUI_DIR}/cimconfig.h\"")
 add_definitions("-DIMGUI_DISABLE_OBSOLETE_FUNCTIONS=1")
+add_definitions("-DIMGUI_DISABLE_DEMO_WINDOWS")
 
+include_directories(${CIMGUI_DIR}/imgui)
 set(IMGUI_SOURCES
     ${CIMGUI_DIR}/cimgui.cpp
     ${CIMGUI_DIR}/imgui/imgui.cpp
     ${CIMGUI_DIR}/imgui/imgui_draw.cpp
     ${CIMGUI_DIR}/imgui/imgui_demo.cpp
     ${CIMGUI_DIR}/imgui/imgui_widgets.cpp
+    ${CIMGUI_DIR}/imgui/imgui_tables.cpp
     ${TABLES_SOURCE}
 )
 
@@ -77,13 +79,7 @@ if(IMGUI_FREETYPE)
 endif(IMGUI_FREETYPE)
 
 # dx11
-list(APPEND IMGUI_SOURCES ${BACKENDS_DIR}/imgui_impl_dx11.cpp)
-
-if(WIN32)
-    list(APPEND IMGUI_LIBRARIES opengl32)
-elseif(WIN32) # Unix
-    list(APPEND IMGUI_LIBRARIES GL)
-endif(WIN32)
+list(APPEND IMGUI_SOURCES ${BACKENDS_DIR}/imgui_impl_dx11.cpp) 
 
 # GLFW
 list(APPEND IMGUI_SOURCES ${BACKENDS_DIR}/imgui_impl_glfw.cpp)
@@ -109,13 +105,8 @@ endif()
 # set language 
 add_library(cimgui STATIC ${IMGUI_SOURCES})
 
-list(APPEND IMGUI_LIBRARIES glfw)
+list(APPEND IMGUI_LIBRARIES glfw d3d11 d3dcompiler)
 
-# print out all of libraries for imgui
-message(STATUS "Libraries for imgui:")
-foreach(lib ${IMGUI_LIBRARIES})
-    message(STATUS "  ${lib}")
-endforeach()
 
 target_link_libraries(cimgui ${IMGUI_LIBRARIES})
 
@@ -126,7 +117,6 @@ set_target_properties(cimgui PROPERTIES LINKER_LANGUAGE CXX)
 # using library
 target_compile_definitions(${PLATFORM_NAME} PUBLIC -DCIMGUI_USE_DX11 -DCIMGUI_USE_GLFW)
 target_link_libraries(${PLATFORM_NAME} 
-    PRIVATE d3d11 d3dcompiler.lib glfw
     PUBLIC  cimgui doodle
 )
 
