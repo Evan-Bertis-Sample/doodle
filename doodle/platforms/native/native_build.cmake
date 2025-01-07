@@ -13,6 +13,14 @@ file(GLOB PLATFORM_HEADERS
 target_include_directories(${PLATFORM_NAME} PUBLIC ${PLATFORM_DIR})
 target_sources(${PLATFORM_NAME} PRIVATE ${PLATFORM_SOURCES})
 
+foreach(header ${PLATFORM_HEADERS})
+    message(STATUS "  Found header: ${header}")
+endforeach()
+
+foreach(source ${PLATFORM_SOURCES})
+    message(STATUS "  Found source: ${source}")
+endforeach()
+
 
 if(WIN32) # to mingw work as all the others
     set(CMAKE_SHARED_LIBRARY_PREFIX "")
