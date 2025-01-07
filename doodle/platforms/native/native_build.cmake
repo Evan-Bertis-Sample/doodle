@@ -13,15 +13,6 @@ file(GLOB PLATFORM_HEADERS
 target_include_directories(${PLATFORM_NAME} PUBLIC ${PLATFORM_DIR})
 target_sources(${PLATFORM_NAME} PRIVATE ${PLATFORM_SOURCES})
 
-foreach(header ${PLATFORM_HEADERS})
-    message(STATUS "  Found header: ${header}")
-endforeach()
-
-foreach(source ${PLATFORM_SOURCES})
-    message(STATUS "  Found source: ${source}")
-endforeach()
-
-
 if(WIN32) # to mingw work as all the others
     set(CMAKE_SHARED_LIBRARY_PREFIX "")
 endif(WIN32)
@@ -117,13 +108,5 @@ set_target_properties(cimgui PROPERTIES LINKER_LANGUAGE CXX)
 # using library
 target_compile_definitions(${PLATFORM_NAME} PUBLIC -DCIMGUI_USE_DX11 -DCIMGUI_USE_GLFW)
 target_link_libraries(${PLATFORM_NAME} 
-    PUBLIC  cimgui doodle
+    PUBLIC cimgui doodle
 )
-
-
-# print out all of the include directories for the project
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message(STATUS "Include directories for the project:")
-foreach(dir ${dirs})
-    message(STATUS "  ${dir}")
-endforeach()
