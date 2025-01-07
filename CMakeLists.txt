@@ -3,7 +3,7 @@
 
 cmake_minimum_required(VERSION 3.13)
 
-project(${PROJECT} C)
+project(${PROJECT} C CXX)
 
 # set the PROJECT_ROOT_DIR variable to the root directory of the project
 set(DOODLE_PROJECT_ROOT_DIR ${CMAKE_SOURCE_DIR}/${PROJECT_CMAKE_DIR})
@@ -132,7 +132,7 @@ build_project()
 # now all sources have been added to the project, we can build it
 # this will be the final executable
 message(STATUS "Building executable ${PROJECT_NAME}")
-# now finally add PROJECT_SOURCES to the project
+# now finally link the doodle library to the project
 target_link_libraries(${PROJECT_NAME} PRIVATE doodle)
 
 

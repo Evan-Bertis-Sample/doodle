@@ -47,7 +47,6 @@ include_directories(${CIMGUI_DIR}/imgui)
 add_definitions("-DIMGUI_USER_CONFIG=\"${CIMGUI_DIR}/cimconfig.h\"")
 add_definitions("-DIMGUI_DISABLE_OBSOLETE_FUNCTIONS=1")
 
-include_directories(${CIMGUI_DIR})
 set(IMGUI_SOURCES
     ${CIMGUI_DIR}/cimgui.cpp
     ${CIMGUI_DIR}/imgui/imgui.cpp
@@ -73,7 +72,7 @@ option(IMGUI_FREETYPE "add Freetype2" OFF)
 if(IMGUI_FREETYPE)
     FIND_PACKAGE(freetype REQUIRED PATHS ${FREETYPE_PATH})
     list(APPEND IMGUI_LIBRARIES freetype)
-    list(APPEND IMGUI_SOURCES ../../imgui/misc/freetype/imgui_freetype.cpp)
+    list(APPEND IMGUI_SOURCES ${CIMGUI_DIR}/imgui/misc/freetype/imgui_freetype.cpp)
     add_definitions("-DCIMGUI_FREETYPE=1")
 endif(IMGUI_FREETYPE)
 
@@ -122,12 +121,14 @@ target_link_libraries(cimgui ${IMGUI_LIBRARIES})
 
 set_target_properties(cimgui PROPERTIES C_STANDARD 99)
 set_target_properties(cimgui PROPERTIES CXX_STANDARD 11)
-set_target_properties(cimgui PROPERTIES LINKER_LANGUAGE C)
+set_target_properties(cimgui PROPERTIES LINKER_LANGUAGE CXX)
 
 # using library
 target_compile_definitions(${PLATFORM_NAME} PUBLIC -DCIMGUI_USE_DX11 -DCIMGUI_USE_GLFW)
-
-target_link_libraries(${PLATFORM_NAME} PRIVATE d3d11 d3dcompiler.lib cimgui glfw doodle)
+target_link_libraries(${PLATFORM_NAME} 
+    PRIVATE d3d11 d3dcompiler.lib glfw
+    PUBLIC  cimgui doodle
+)
 
 
 # print out all of the include directories for the project
