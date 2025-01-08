@@ -19,7 +19,7 @@ static void exit_handler(void *ctx) {
     platform.shutdown(platform.context);
 }
 
-int main(int32_t argc, char *argv[]) {
+int main(int32_t argc, char **argv) {
     NATIVE_LOG("Invoking main\n");
     doodle_app_desc_t desc = doodle_main(argc, argv);
 

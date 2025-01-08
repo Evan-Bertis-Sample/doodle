@@ -38,7 +38,6 @@ add_definitions("-DIMGUI_USER_CONFIG=\"${CIMGUI_DIR}/cimconfig.h\"")
 add_definitions("-DIMGUI_DISABLE_OBSOLETE_FUNCTIONS=1")
 add_definitions("-DIMGUI_DISABLE_DEMO_WINDOWS")
 
-include_directories(${CIMGUI_DIR}/imgui)
 set(IMGUI_SOURCES
     ${CIMGUI_DIR}/cimgui.cpp
     ${CIMGUI_DIR}/imgui/imgui.cpp
@@ -98,7 +97,7 @@ add_library(cimgui STATIC ${IMGUI_SOURCES})
 
 list(APPEND IMGUI_LIBRARIES glfw d3d11 d3dcompiler)
 
-
+target_include_directories(cimgui PUBLIC ${CIMGUI_DIR}/imgui)
 target_link_libraries(cimgui ${IMGUI_LIBRARIES})
 
 set_target_properties(cimgui PROPERTIES C_STANDARD 99)
@@ -109,4 +108,11 @@ set_target_properties(cimgui PROPERTIES LINKER_LANGUAGE CXX)
 target_compile_definitions(${PLATFORM_NAME} PUBLIC -DCIMGUI_USE_DX11 -DCIMGUI_USE_GLFW)
 target_link_libraries(${PLATFORM_NAME} 
     PUBLIC cimgui doodle
+)
+
+# Copy the DLL next to "display.exe"
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_FILE:glfw>"              # The actual DLL produced by the glfw target
+        "$<TARGET_FILE_DIR:display>"       # The folder where display.exe was generated
 )
