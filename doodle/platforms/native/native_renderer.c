@@ -1,91 +1,62 @@
-/**
- * @file native_renderer.c
- * @brief An implementation of the doodle renderer module for the native platform
- *        using ImGui for drawing, via our shared_gui singleton.
- */
-
+#include <doodle/core/modules/doodle_renderer.h>
 #include <doodle/platforms/native/native_debug.h>
 #include <doodle/platforms/native/native_gui.h>
 #include <doodle/platforms/native/native_renderer.h>
 #include <stdlib.h>
 
+static void __native_renderer_mark_dirty(native_renderer_ctx_t *ctx, doodle_rect_t rect) {
+    if (ctx->dirty_count >= MAX_DIRTY_REGIONS) {
+        NATIVE_LOG_ERROR("Exceeded maximum dirty regions\n");
+        return;
+    }
 
+    ctx->dirty_regions[ctx->dirty_count++] = rect;
+}
 
 static void __native_renderer_destroy(void *module) {
     native_renderer_ctx_t *ctx = (native_renderer_ctx_t *)module;
     // If you had per-renderer ImGui resources (custom fonts, textures, etc.),
     // you could free them here. The global ImGui context is managed by shared_gui.
-
     free(ctx);
 }
 
 static void __native_renderer_clear(doodle_module_renderer_t *renderer, doodle_color_t color) {
-    // We simply pass the desired clear color to the shared_gui's state,
-    // so that on the next frame's render, the background will be cleared.
-    // Convert doodle_color_t (0–255) to float ImVec4 (0–1).
-    ImVec4 clear_col;
-    clear_col.x = color.r / 255.0f;
-    clear_col.y = color.g / 255.0f;
-    clear_col.z = color.b / 255.0f;
-    clear_col.w = color.a / 255.0f;
-
-    native_gui_state_t *gui_state = native_gui_get_state();
-    gui_state->clear_color = clear_col;
+    native_renderer_ctx_t *ctx = (native_renderer_ctx_t *)renderer->module.context;
+    // memset() is faster than a loop for filling a buffer with a single value.
+    memset(ctx->offscreen.pixels, color.value, ctx->offscreen.width * ctx->offscreen.height * sizeof(doodle_color_t));
 }
 
 static void __native_renderer_draw_pixel(doodle_module_renderer_t *renderer, uint32_t x, uint32_t y, doodle_color_t color) {
-    // For a "pixel", draw a small filled rect (1x1).
-    ImDrawList *draw_list = igGetBackgroundDrawList_Nil();
-    ImU32 col32 = IM_COL32(color.r, color.g, color.b, color.a);
+    native_renderer_ctx_t *ctx = (native_renderer_ctx_t *)renderer->module.context;
+    if (x >= ctx->config.width || y >= ctx->config.height) {
+        return;  // Out of bounds
+    }
 
-    float fx = (float)x;
-    float fy = (float)y;
+    // offscreen buffer is row-major: row y, column x
+    ctx->offscreen.pixels[y * ctx->config.width + x] = color;
 
-    // 1x1 pixel rect
-    ImDrawList_AddRectFilled(draw_list,
-                             (ImVec2){fx, fy},
-                             (ImVec2){fx + 1.0f, fy + 1.0f},
-                             col32,
-                             0.0f,
-                             0);
+    // Mark the region as dirty
+    doodle_rect_t dirty_rect = {
+        .x = x,
+        .y = y,
+        .width = 1,
+        .height = 1,
+    };
+
+    __native_renderer_mark_dirty(ctx, dirty_rect);
 }
 
 static void __native_renderer_draw_line(doodle_module_renderer_t *renderer,
                                         uint32_t x0, uint32_t y0,
                                         uint32_t x1, uint32_t y1,
                                         doodle_color_t color) {
-    // Draw a line between (x0,y0) and (x1,y1).
-    ImDrawList *draw_list = igGetBackgroundDrawList_Nil();
-    ImU32 col32 = IM_COL32(color.r, color.g, color.b, color.a);
-
-    ImVec2 p1 = {(float)x0, (float)y0};
-    ImVec2 p2 = {(float)x1, (float)y1};
-
-    // Thickness of 1.0f, adjust as needed
-    ImDrawList_AddLine(draw_list, p1, p2, col32, 1.0f);
+    native_renderer_ctx_t *ctx = (native_renderer_ctx_t *)renderer->module.context;
 }
 
 static void __native_renderer_draw_rect(doodle_module_renderer_t *renderer,
                                         uint32_t x, uint32_t y,
                                         uint32_t width, uint32_t height,
                                         doodle_color_t color) {
-    ImDrawList *draw_list = igGetBackgroundDrawList_Nil();
-    ImU32 col32 = IM_COL32(color.r, color.g, color.b, color.a);
-
-    float fx = (float)x;
-    float fy = (float)y;
-    float fx2 = (float)(x + width);
-    float fy2 = (float)(y + height);
-
-    // For a filled rectangle, you might also call ImDrawList_AddRectFilled()
-    ImDrawList_AddRect(draw_list,
-                       (ImVec2){fx, fy},
-                       (ImVec2){fx2, fy2},
-                       col32,
-                       0.0f,  // rounding
-                       0,     // corner flags
-                       1.0f   // thickness
-    );
 }
 
 static void __native_renderer_draw_circle(doodle_module_renderer_t *renderer,

@@ -42,6 +42,7 @@ typedef struct native_gui_state {
     // ImGui context and a color for clearing, for demonstration
     ImGuiContext*                  imgui_context;
     ImVec4                         clear_color;
+    
 } native_gui_state_t;
 
 /**

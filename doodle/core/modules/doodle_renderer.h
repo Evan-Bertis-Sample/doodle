@@ -22,6 +22,25 @@ typedef struct doodle_color {
     };
 } doodle_color_t;
 
+typedef struct doodle_texture {
+    uint32_t width;
+    uint32_t height;
+    doodle_color_t *pixels;
+} doodle_texture_t;
+
+typedef enum doodle_rectmode {
+    DOODLE_RECTMODE_CORNER,
+    DOODLE_RECTMODE_CENTER,
+} doodle_rectmode_t;
+
+typedef struct doodle_rect {
+    doodle_rectmode_t mode;
+    uint32_t x;
+    uint32_t y;
+    uint32_t width;
+    uint32_t height;
+} doodle_rect_t;
+
 typedef struct doodle_module_renderer_config {
     uint32_t width;
     uint32_t height;
@@ -37,6 +56,8 @@ typedef struct doodle_module_renderer {
     void (*draw_rect)(struct doodle_module_renderer *renderer, uint32_t x, uint32_t y, uint32_t width, uint32_t height, doodle_color_t color);
     void (*draw_circle)(struct doodle_module_renderer *renderer, uint32_t x, uint32_t y, uint32_t radius, doodle_color_t color);
     void (*draw_text)(struct doodle_module_renderer *renderer, uint32_t x, uint32_t y, const char *text, doodle_color_t color);
+    void (*blit)(struct doodle_module_renderer *renderer, doodle_rect_t rect);
+    void (*blit_texture)(struct doodle_module_renderer *renderer, doodle_texture_t *texture, doodle_rect_t rect);
 
 } doodle_module_renderer_t;
 

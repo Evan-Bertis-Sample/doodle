@@ -4,7 +4,6 @@
 #include <doodle/core/doodle_modules.h>
 #include <doodle/core/modules/doodle_renderer.h>
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -26,12 +25,18 @@ extern "C" {
 #include <windows.h>
 #endif
 
+#define MAX_DIRTY_REGIONS 64
+
 typedef struct native_renderer_ctx {
     doodle_module_renderer_config_t config;
-    // some stuff regarding imgui...
-    // ...
-} native_renderer_ctx_t;
 
+    // The offscreen buffer we draw into for each command.
+    doodle_texture_t offscreen;
+
+    // List of dirty rectangles that need to be updated on screen at next blit.
+    doodle_rect_t dirty_regions[MAX_DIRTY_REGIONS];
+    size_t dirty_count;
+} native_renderer_ctx_t;
 
 /**------------------------------------------------------------------------
  *                           Native Renderer Functions
@@ -42,9 +47,8 @@ typedef struct native_renderer_ctx {
 /// @return A new native renderer module.
 doodle_module_renderer_t *native_renderer_create(doodle_module_renderer_config_t config);
 
-
 #ifdef __cplusplus
 }
-#endif // __cplusplus
+#endif  // __cplusplus
 
-#endif // __NATIVE_RENDERER_H__
+#endif  // __NATIVE_RENDERER_H__
