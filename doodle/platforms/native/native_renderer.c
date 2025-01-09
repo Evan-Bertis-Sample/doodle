@@ -29,6 +29,7 @@ static void __native_renderer_clear(doodle_module_renderer_t *renderer, doodle_c
 static void __native_renderer_draw_pixel(doodle_module_renderer_t *renderer, uint32_t x, uint32_t y, doodle_color_t color) {
     native_renderer_ctx_t *ctx = (native_renderer_ctx_t *)renderer->module.context;
     if (x >= ctx->config.width || y >= ctx->config.height) {
+        NATIVE_LOG("Draw pixel out of bounds: %d, %d\n", x, y);
         return;  // Out of bounds
     }
 
@@ -57,42 +58,83 @@ static void __native_renderer_draw_rect(doodle_module_renderer_t *renderer,
                                         uint32_t x, uint32_t y,
                                         uint32_t width, uint32_t height,
                                         doodle_color_t color) {
+    native_renderer_ctx_t *ctx = (native_renderer_ctx_t *)renderer->module.context;
+    if (x >= ctx->config.width || y >= ctx->config.height) {
+        NATIVE_LOG("Draw rect out of bounds: %d, %d\n", x, y);
+        return;  // Out of bounds
+    }
+
+    // Draw the rectangle by drawing each pixel
+    // so basically, we jump to the left side of the row, then memset the row to the width
+    // then we jump the line down
+    // kind of like a scanline
+    for (uint32_t row = y; row < y + height; row++) {
+        if (row >= ctx->config.height) {
+            break;  // Out of bounds
+        }
+
+        // offscreen buffer is row-major: row y, column x
+        memset(&ctx->offscreen.pixels[row * ctx->config.width + x], color.value, width * sizeof(doodle_color_t));
+    }
+
+    // Mark the region as dirty
+    doodle_rect_t dirty_rect = {
+        .x = x,
+        .y = y,
+        .width = width,
+        .height = height,
+    };
+
+    __native_renderer_mark_dirty(ctx, dirty_rect);
 }
 
 static void __native_renderer_draw_circle(doodle_module_renderer_t *renderer,
                                           uint32_t x, uint32_t y,
                                           uint32_t radius,
                                           doodle_color_t color) {
-    ImDrawList *draw_list = igGetBackgroundDrawList_Nil();
-    ImU32 col32 = IM_COL32(color.r, color.g, color.b, color.a);
+    native_renderer_ctx_t *ctx = (native_renderer_ctx_t *)renderer->module.context;
 
-    float fx = (float)x;
-    float fy = (float)y;
-    float fr = (float)radius;
+    // Draw the circle by drawing each pixel
+    // just like, draw it stupidly
+    for (uint32_t row = y - radius; row < y + radius; row++) {
+        if (row >= ctx->config.height) {
+            NATIVE_LOG("Draw circle out of bounds: %d, %d\n", x, y);
+            break;  // Out of bounds
+        }
 
-    // Filled circle. For just an outline, use ImDrawList_AddCircle().
-    // The 16 parameter is the number of segments. Increase if you want smoother circles.
-    ImDrawList_AddCircleFilled(draw_list, (ImVec2){fx, fy}, fr, col32, 16);
+        for (uint32_t col = x - radius; col < x + radius; col++) {
+            if (col >= ctx->config.width) {
+                NATIVE_LOG("Draw circle out of bounds: %d, %d\n", x, y);
+                break;  // Out of bounds
+            }
+
+            // offscreen buffer is row-major: row y, column x
+            ctx->offscreen.pixels[row * ctx->config.width + col] = color;
+        }
+    }
 }
 
 static void __native_renderer_draw_text(doodle_module_renderer_t *renderer,
                                         uint32_t x, uint32_t y,
                                         const char *text,
                                         doodle_color_t color) {
-    if (!text) {
-        return;  // Nothing to draw
+    native_renderer_ctx_t *ctx = (native_renderer_ctx_t *)renderer->module.context;
+    NATIVE_LOG_ERROR("Draw text not implemented\n");
+}
+
+static void __native_renderer_blit(doodle_module_renderer_t *renderer, doodle_rect_t rect) {
+    native_renderer_ctx_t *ctx = (native_renderer_ctx_t *)renderer->module.context;
+
+    for (uint32_t i = 0; i < ctx->dirty_count; i++) {
+        doodle_rect_t dirty_rect = ctx->dirty_regions[i];
+        // Blit the dirty region to the screen
+        // This is where you would copy the offscreen buffer to the screen
+        // using the platform's native graphics API (e.g., D3D11, OpenGL, etc.)
+        NATIVE_LOG("Blitting dirty region: %d, %d, %d, %d\n",
+                   dirty_rect.x, dirty_rect.y, dirty_rect.width, dirty_rect.height);
     }
 
-    ImDrawList *draw_list = igGetBackgroundDrawList_Nil();
-    ImU32 col32 = IM_COL32(color.r, color.g, color.b, color.a);
-
-    float fx = (float)x;
-    float fy = (float)y;
-
-    // Draw text using ImGui’s default font. For custom fonts, you’d load them in shared_gui and set them.
-    // Note: ImGui draws text anchored from the top-left corner of the text.
-    // Adjust as needed for your coordinate system.
-    ImDrawList_AddText_Vec2(draw_list, (ImVec2){fx, fy}, col32, text, NULL);
+    ctx->dirty_count = 0;  // Reset the dirty region count
 }
 
 //--------------------------------------------------------------------------------------
@@ -135,6 +177,7 @@ doodle_module_renderer_t *native_renderer_create(doodle_module_renderer_config_t
         .draw_rect = __native_renderer_draw_rect,
         .draw_circle = __native_renderer_draw_circle,
         .draw_text = __native_renderer_draw_text,
+        .blit = __native_renderer_blit,
     };
 
     NATIVE_LOG("Native renderer created\n");
