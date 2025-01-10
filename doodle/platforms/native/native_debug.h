@@ -5,29 +5,43 @@
 extern "C" {
 #endif
 
-#include <stdlib.h> // for exit()
-#include <stdio.h>  // for printf()
+#include <doodle/core/doodle_debug.h>  // includes the runtime-based DOODLE_FILENAME
+#include <stdio.h>                     // for printf()
+#include <stdlib.h>                    // for exit()
 
-#include <doodle/core/doodle_debug.h>
-
+// Example toggles
 #define NATIVE_LOG_ENABLED
 #define NATIVE_ALLOW_FATAL_ERRORS
-#define NATIVE_MSG_PREFIX "[native]" "[" DOODLE_FILENAME ":" DOODLE_STR(DOODLE_LINE) "]"
 
+// Just a simple prefix for native logs
+#define NATIVE_MSG_PREFIX "[native]"
+
+// Colors (inherited from doodle_debug.h, presumably)
 #define NATIVE_COLOR DOODLE_PLATFORM_COLOR
 #define NATIVE_ERROR_COLOR DOODLE_ERROR_COLOR
 #define NATIVE_SUFFIX_COLOR DOODLE_SUFFIX_COLOR
 
 #ifdef NATIVE_LOG_ENABLED
-#define NATIVE_LOG(...) printf(NATIVE_COLOR NATIVE_MSG_PREFIX " " NATIVE_SUFFIX_COLOR __VA_ARGS__)
-#define NATIVE_LOG_ERROR(...) printf(NATIVE_ERROR_COLOR NATIVE_MSG_PREFIX " [ERROR] " NATIVE_SUFFIX_COLOR __VA_ARGS__)
+// Instead of concatenating DOODLE_FILENAME into the literal,
+// we use it at runtime via printf formatting.
+#define NATIVE_LOG(...)                                                                \
+    printf(NATIVE_COLOR NATIVE_MSG_PREFIX " [%s:%d] " NATIVE_SUFFIX_COLOR __VA_ARGS__, \
+           DOODLE_FILENAME, DOODLE_LINE)
+
+#define NATIVE_LOG_ERROR(...)                                                                        \
+    printf(NATIVE_ERROR_COLOR NATIVE_MSG_PREFIX " [%s:%d] [ERROR] " NATIVE_SUFFIX_COLOR __VA_ARGS__, \
+           DOODLE_FILENAME, DOODLE_LINE)
 #else
-#define NATIVE_LOG(...) void(0)
-#define NATIVE_LOG_ERROR(...) void(0)
+#define NATIVE_LOG(...) (void)0
+#define NATIVE_LOG_ERROR(...) (void)0
 #endif
 
 #ifdef NATIVE_ALLOW_FATAL_ERRORS
-#define NATIVE_FATAL_ERROR(...) { NATIVE_LOG_ERROR(__VA_ARGS__); exit(1); }
+#define NATIVE_FATAL_ERROR(...)        \
+    do {                               \
+        NATIVE_LOG_ERROR(__VA_ARGS__); \
+        exit(1);                       \
+    } while (0)
 #else
 #define NATIVE_FATAL_ERROR(...) NATIVE_LOG_ERROR(__VA_ARGS__)
 #endif
