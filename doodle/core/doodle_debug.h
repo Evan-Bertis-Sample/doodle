@@ -5,11 +5,12 @@
 extern "C" {
 #endif
 
-#include <stdlib.h> // for exit()
-#include <stdio.h>  // for printf()
+#include <stdio.h>   // for printf()
+#include <stdlib.h>  // for exit()
+#include <string.h>  // for strrchr()
 
 #define DOODLE_CORE_LOG_ENABLED
-#define DOODLE_CORE_ALLOW_FATAL_ERRORS // if defined, will call exit() on fatal errors
+#define DOODLE_CORE_ALLOW_FATAL_ERRORS  // if defined, will call exit() on fatal errors
 #define DOODLE_APP_LOG_ENABLED
 #define DOODLE_APP_ALLOW_FATAL_ERRORS
 
@@ -19,7 +20,7 @@ extern "C" {
 #ifdef __clang__
 #define DOODLE_FILENAME __FILE_NAME__
 #elif __GNUC__
-#define DOODLE_FILENAME_HELPER (__builtin_strrchr(__FILE__, '/') ? __builtin_strrchr(__FILE__, '/') + 1 : __FILE__) 
+#define DOODLE_FILENAME_HELPER (__builtin_strrchr(__FILE__, '/') ? __builtin_strrchr(__FILE__, '/') + 1 : __FILE__)
 #define DOODLE_FILENAME DOODLE_STR(DOODLE_FILENAME_HELPER)
 #else
 #define DOODLE_FILENAME __FILE__
@@ -33,8 +34,12 @@ extern "C" {
 #define DOODLE_APP_COLOR "\033[1;33m"
 #define DOODLE_SUFFIX_COLOR "\033[0m"
 
-#define DOODLE_CORE_MSG_PREFIX "[doodle-core]" "[" DOODLE_FILENAME ":" DOODLE_STR(DOODLE_LINE) "]"
-#define DOODLE_APP_MSG_PREFIX "[doodle-app]" "[" DOODLE_FILENAME ":" DOODLE_STR(DOODLE_LINE) "]"
+#define DOODLE_CORE_MSG_PREFIX \
+    "[doodle-core]"            \
+    "[" DOODLE_FILENAME ":" DOODLE_STR(DOODLE_LINE) "]"
+#define DOODLE_APP_MSG_PREFIX \
+    "[doodle-app]"            \
+    "[" DOODLE_FILENAME ":" DOODLE_STR(DOODLE_LINE) "]"
 
 #ifdef DOODLE_CORE_LOG_ENABLED
 #define DOODLE_CORE_LOG(...) printf(DOODLE_PREFIX_COLOR DOODLE_CORE_MSG_PREFIX " " DOODLE_SUFFIX_COLOR __VA_ARGS__)
@@ -45,7 +50,11 @@ extern "C" {
 #endif
 
 #ifdef DOODLE_CORE_ALLOW_FATAL_ERRORS
-#define DOODLE_CORE_FATAL_ERROR(...) { DOODLE_CORE_LOG_ERROR(__VA_ARGS__); exit(1); }
+#define DOODLE_CORE_FATAL_ERROR(...)        \
+    {                                       \
+        DOODLE_CORE_LOG_ERROR(__VA_ARGS__); \
+        exit(1);                            \
+    }
 #else
 #define DOODLE_CORE_FATAL_ERROR(...) DOODLE_CORE_LOG_ERROR(__VA_ARGS__)
 #endif
@@ -59,11 +68,14 @@ extern "C" {
 #endif
 
 #ifdef DOODLE_APP_ALLOW_FATAL_ERRORS
-#define DOODLE_APP_FATAL_ERROR(...) { DOODLE_APP_LOG_ERROR(__VA_ARGS__); exit(1); }
+#define DOODLE_APP_FATAL_ERROR(...)        \
+    {                                      \
+        DOODLE_APP_LOG_ERROR(__VA_ARGS__); \
+        exit(1);                           \
+    }
 #else
 #define DOODLE_APP_FATAL_ERROR(...) DOODLE_APP_LOG_ERROR(__VA_ARGS__)
 #endif
-
 
 #ifdef __cplusplus
 }

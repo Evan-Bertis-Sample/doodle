@@ -29,7 +29,7 @@ file(GLOB_RECURSE DOODLE_CORE_SOURCES "${DOODLE_PARENT_DIR}/doodle/core/*.c")
 file(GLOB_RECURSE DOODLE_CORE_HEADERS "${DOODLE_PARENT_DIR}/doodle/core/*.h")
 
 # declare the doodle library as a static library
-add_library(doodle STATIC 
+add_library(doodle STATIC
     ${DOODLE_CORE_SOURCES}
     ${DOODLE_CORE_HEADERS}
 )
@@ -74,7 +74,7 @@ else()
     message(STATUS "No platform-specific configuration found, using default sources from ${PLATFORM_DIR}")
     file(GLOB PLATFORM_SOURCES "${PLATFORM_DIR}/*.c")
     file(GLOB PLATFORM_HEADERS "${PLATFORM_DIR}/*.h")
-    
+
     # include the platform directory for headers
     target_include_directories(${PLATFORM_NAME} PUBLIC ${PLATFORM_DIR})
 
@@ -134,5 +134,3 @@ build_project()
 message(STATUS "Building executable ${PROJECT_NAME}")
 # now finally link the doodle library to the project
 target_link_libraries(${PROJECT_NAME} PRIVATE doodle)
-
-
