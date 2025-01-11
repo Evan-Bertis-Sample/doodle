@@ -13,7 +13,6 @@
 #include <doodle/platforms/native/native_input.h>
 #include <doodle/platforms/native/native_renderer.h>
 
-
 static void native_attach_exit_interrupts(void *ctx, void (*exit_handler)(void *)) {
     // no-op
 }
