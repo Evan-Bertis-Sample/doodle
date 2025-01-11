@@ -18,6 +18,8 @@ static void native_attach_exit_interrupts(void *ctx, void (*exit_handler)(void *
 }
 
 doodle_platform_t doodle_platform_create(void **module_configs) {
+    printf(DOODLE_FILENAME);
+
     NATIVE_LOG("Module configs at %p\n", module_configs);
 
     for (uint32_t i = 0; i < DOODLE_MODULE_TYPE_COUNT; i++) {

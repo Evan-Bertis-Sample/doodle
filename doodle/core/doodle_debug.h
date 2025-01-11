@@ -52,13 +52,13 @@ extern "C" {
 
 // Example:
 // [doodle-core] [myfile.c:42] some message
-#define DOODLE_CORE_LOG(...)                                                                     \
-    printf(DOODLE_PREFIX_COLOR DOODLE_CORE_MSG_PREFIX "[%s:%d] " DOODLE_SUFFIX_COLOR __VA_ARGS__, \
-           DOODLE_FILENAME, DOODLE_LINE)
+#define DOODLE_CORE_LOG(fmt, ...)                                                         \
+    printf(DOODLE_PREFIX_COLOR DOODLE_CORE_MSG_PREFIX "[%s:%d] " DOODLE_SUFFIX_COLOR fmt, \
+           DOODLE_FILENAME, DOODLE_LINE, ##__VA_ARGS__)
 
-#define DOODLE_CORE_LOG_ERROR(...)                                                                     \
-    printf(DOODLE_ERROR_COLOR DOODLE_CORE_MSG_PREFIX "[%s:%d][ERROR] " DOODLE_SUFFIX_COLOR __VA_ARGS__, \
-           DOODLE_FILENAME, DOODLE_LINE)
+#define DOODLE_CORE_LOG_ERROR(...)                                                              \
+    printf(DOODLE_ERROR_COLOR DOODLE_CORE_MSG_PREFIX "[%s:%d][ERROR] " DOODLE_SUFFIX_COLOR fmt, \
+           DOODLE_FILENAME, DOODLE_LINE, ##__VA_ARGS__)
 #else
 #define DOODLE_CORE_LOG(...) (void)0
 #define DOODLE_CORE_LOG_ERROR(...) (void)0
@@ -78,7 +78,7 @@ extern "C" {
 
 // Example:
 // [doodle-app] [myfile.c:42] some message
-#define DOODLE_APP_LOG(...)                                                                  \
+#define DOODLE_APP_LOG(...)                                                                   \
     printf(DOODLE_APP_COLOR DOODLE_APP_MSG_PREFIX "[%s:%d] " DOODLE_SUFFIX_COLOR __VA_ARGS__, \
            DOODLE_FILENAME, DOODLE_LINE)
 
