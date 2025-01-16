@@ -10,23 +10,32 @@ static void __native_renderer_mark_dirty(native_renderer_ctx_t *ctx, doodle_rect
         return;
     }
 
+    // check if the region is already dirty, i.e if it is already fully contained in another dirty region
+    for (uint32_t i = 0; i < ctx->dirty_count; i++) {
+        if (doodle_rect_fully_contains(ctx->dirty_regions[i], rect)) {
+            return;  // Already dirty
+        }
+
+        if (doodle_rect_fully_contains(rect, ctx->dirty_regions[i])) {
+            // Replace the dirty region with the new region
+            ctx->dirty_regions[i] = rect;
+            return;
+        }
+    }
+
     ctx->dirty_regions[ctx->dirty_count++] = rect;
 }
 
-static void __native_renderer_destroy(void *module) {
-    native_renderer_ctx_t *ctx = (native_renderer_ctx_t *)module;
-    // If you had per-renderer ImGui resources (custom fonts, textures, etc.),
-    // you could free them here. The global ImGui context is managed by shared_gui.
-    free(ctx);
-}
-
 static void __native_renderer_clear(doodle_module_renderer_t *renderer, doodle_color_t color) {
+    NATIVE_LOG("Clearing the screen\n");
     native_renderer_ctx_t *ctx = (native_renderer_ctx_t *)renderer->module.context;
     // memset() is faster than a loop for filling a buffer with a single value.
     memset(ctx->offscreen.pixels, color.value, ctx->offscreen.width * ctx->offscreen.height * sizeof(doodle_color_t));
+    __native_renderer_mark_dirty(ctx, (doodle_rect_t){0, 0, ctx->config.width, ctx->config.height});
 }
 
 static void __native_renderer_draw_pixel(doodle_module_renderer_t *renderer, uint32_t x, uint32_t y, doodle_color_t color) {
+    NATIVE_LOG("Drawing pixel at: %d, %d\n", x, y);
     native_renderer_ctx_t *ctx = (native_renderer_ctx_t *)renderer->module.context;
     if (x >= ctx->config.width || y >= ctx->config.height) {
         NATIVE_LOG("Draw pixel out of bounds: %d, %d\n", x, y);
@@ -34,7 +43,7 @@ static void __native_renderer_draw_pixel(doodle_module_renderer_t *renderer, uin
     }
 
     // offscreen buffer is row-major: row y, column x
-    ctx->offscreen.pixels[y * ctx->config.width + x] = color;
+    doodle_texture_set_pixel(&ctx->offscreen, x, y, color);
 
     // Mark the region as dirty
     doodle_rect_t dirty_rect = {
@@ -138,6 +147,16 @@ static void __native_renderer_blit(doodle_module_renderer_t *renderer, doodle_re
 }
 
 //--------------------------------------------------------------------------------------
+// Destroy Function
+//--------------------------------------------------------------------------------------
+
+static void __native_renderer_destroy(void *module) {
+    native_renderer_ctx_t *ctx = (native_renderer_ctx_t *)module;
+    doodle_texture_destroy(ctx->offscreen);
+    free(ctx);
+}
+
+//--------------------------------------------------------------------------------------
 // Create Function
 //--------------------------------------------------------------------------------------
 doodle_module_renderer_t *native_renderer_create(doodle_module_renderer_config_t config) {
@@ -166,6 +185,27 @@ doodle_module_renderer_t *native_renderer_create(doodle_module_renderer_config_t
 
     // Create a doodle_module_t wrapper that calls our destroy function when done
     doodle_module_t module = doodle_module_create(DOODLE_MODULE_TYPE_RENDERER, ctx, __native_renderer_destroy);
+
+    module.context = malloc(sizeof(native_renderer_ctx_t));
+    native_renderer_ctx_t *module_ctx = (native_renderer_ctx_t *)module.context;
+    if (!module_ctx) {
+        NATIVE_FATAL_ERROR("Failed to allocate memory for native renderer context\n");
+        free(renderer);
+        free(ctx);
+        return NULL;
+    }
+
+    // Initialize the offscreen buffer
+    module_ctx->offscreen = doodle_texture_create(config.width, config.height);
+
+    if (native_gui_initialize("doodle", config.width, config.height)) {
+        NATIVE_LOG("Native GUI initialized\n");
+    } else {
+        NATIVE_FATAL_ERROR("Failed to initialize native GUI\n");
+        free(renderer);
+        free(ctx);
+        return NULL;
+    }
 
     // Fill out the function pointers
     *renderer = (doodle_module_renderer_t){

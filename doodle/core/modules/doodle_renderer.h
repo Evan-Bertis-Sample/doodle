@@ -28,6 +28,12 @@ typedef struct doodle_texture {
     doodle_color_t *pixels;
 } doodle_texture_t;
 
+doodle_texture_t doodle_texture_create(uint32_t width, uint32_t height);
+void doodle_texture_destroy(doodle_texture_t texture);
+uint32_t doodle_texture_get_idx(doodle_texture_t *texture, uint32_t x, uint32_t y);
+void doodle_texture_set_pixel(doodle_texture_t *texture, uint32_t x, uint32_t y, doodle_color_t color);
+doodle_color_t doodle_texture_get_pixel(doodle_texture_t *texture, uint32_t x, uint32_t y);
+
 typedef enum doodle_rectmode {
     DOODLE_RECTMODE_CORNER,
     DOODLE_RECTMODE_CENTER,
@@ -40,6 +46,15 @@ typedef struct doodle_rect {
     uint32_t width;
     uint32_t height;
 } doodle_rect_t;
+
+
+doodle_rect_t doodle_rect_convert_to_corner(doodle_rect_t rect);
+doodle_rect_t doodle_rect_convert_to_center(doodle_rect_t rect);
+bool doodle_rect_contains(doodle_rect_t rect, uint32_t x, uint32_t y);
+bool doodle_rect_intersects(doodle_rect_t a, doodle_rect_t b);
+bool doodle_rect_fully_contains(doodle_rect_t a, doodle_rect_t b);
+doodle_rect_t doodle_rect_combine(doodle_rect_t a, doodle_rect_t b);
+
 
 typedef struct doodle_module_renderer_config {
     uint32_t width;

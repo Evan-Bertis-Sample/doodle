@@ -44,6 +44,7 @@ doodle_platform_t doodle_platform_create(void **module_configs) {
 
         return platform;
     }
+    
     doodle_module_renderer_t *renderer = native_renderer_create(
         *(doodle_module_renderer_config_t *)renderer_config);
 

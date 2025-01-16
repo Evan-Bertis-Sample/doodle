@@ -25,5 +25,22 @@ void doodle_platform_add_module(doodle_platform_t *platform, doodle_module_type_
 }
 
 void *doodle_platform_get_module(doodle_platform_t *platform, doodle_module_type_t type) {
-    return platform->modules[type];
+    doodle_module_t *module = platform->modules[type];
+
+    if (!module) {
+        DOODLE_CORE_FATAL_ERROR("Module not found\n");
+        return NULL;
+    }
+
+    if (!doodle_module_verify(module)) {
+        DOODLE_CORE_FATAL_ERROR("Invalid module\n");
+        return NULL;
+    }
+
+    if (module->type != type) {
+        DOODLE_CORE_FATAL_ERROR("Module type mismatch\n");
+        return NULL;
+    }
+
+    return module;
 }
