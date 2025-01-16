@@ -141,7 +141,26 @@ static void __native_renderer_blit(doodle_module_renderer_t *renderer, doodle_re
         // using the platform's native graphics API (e.g., D3D11, OpenGL, etc.)
         NATIVE_LOG("Blitting dirty region: %d, %d, %d, %d\n",
                    dirty_rect.x, dirty_rect.y, dirty_rect.width, dirty_rect.height);
+
+        // take our onscreen buffer, copy the region from the offscreen buffer to the onscreen buffer
+        // then, display the onscreen buffer
+
+        doodle_rect_t corner_rect = doodle_rect_convert_to_corner(dirty_rect);
+
+        for (uint32_t row = 0; row < corner_rect.height; row++)
+        {
+            uint32_t idx = doodle_texture_get_idx(&ctx->onscreen, dirty_rect.x, dirty_rect.y + row);
+            memcpy(
+                ctx->onscreen.pixels + idx,
+                ctx->offscreen.pixels + idx,
+                dirty_rect.width
+            );
+        }
+
+        native_gui_display_texture(&ctx->onscreen);
+
     }
+
 
     ctx->dirty_count = 0;  // Reset the dirty region count
 }
@@ -197,6 +216,14 @@ doodle_module_renderer_t *native_renderer_create(doodle_module_renderer_config_t
 
     // Initialize the offscreen buffer
     module_ctx->offscreen = doodle_texture_create(config.width, config.height);
+    module_ctx->onscreen = doodle_texture_create(config.width, config.height);
+
+    if (!module_ctx->offscreen.pixels || !module_ctx->onscreen.pixels) {
+        NATIVE_FATAL_ERROR("Failed to allocate memory for offscreen buffer\n");
+        free(renderer);
+        free(ctx);
+        return NULL;
+    }
 
     if (native_gui_initialize("doodle", config.width, config.height)) {
         NATIVE_LOG("Native GUI initialized\n");

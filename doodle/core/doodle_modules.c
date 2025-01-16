@@ -27,11 +27,11 @@ doodle_module_t doodle_module_create(doodle_module_type_t type, doodle_module_co
 bool doodle_module_verify(void *module) {
     doodle_module_t mod = *(doodle_module_t *)module;
 
-    DOODLE_CORE_LOG("Verifying module\n");
-    DOODLE_CORE_LOG("Module type: %d\n", mod.type);
-    DOODLE_CORE_LOG("Module context: %p\n", mod.context);
-    DOODLE_CORE_LOG("Module destroy: %p\n", mod.destroy);
-    DOODLE_CORE_LOG("Module checksum: %d\n", mod.checksum);
+    // DOODLE_CORE_LOG("Verifying module\n");
+    // DOODLE_CORE_LOG("Module type: %d\n", mod.type);
+    // DOODLE_CORE_LOG("Module context: %p\n", mod.context);
+    // DOODLE_CORE_LOG("Module destroy: %p\n", mod.destroy);
+    // DOODLE_CORE_LOG("Module checksum: %d\n", mod.checksum);
 
     return mod.checksum == CHECKSUM;
 }

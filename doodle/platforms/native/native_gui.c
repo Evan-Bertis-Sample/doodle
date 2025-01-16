@@ -23,6 +23,8 @@
 #include <windows.h>
 #endif
 
+#include <doodle/platforms/native/native_debug.h>
+
 //--------------------------------------------------------------------------------------
 // Globals / Singleton
 //--------------------------------------------------------------------------------------
@@ -142,56 +144,13 @@ void native_gui_shutdown(void) {
     g_is_initialized = false;
 }
 
-void native_gui_new_frame(void) {
-    if (!g_is_initialized) return;
-
-    // Poll events from GLFW
-    glfwPollEvents();
-
-    // Start a new ImGui frame
-    ImGui_ImplDX11_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    igNewFrame();
+void native_gui_display_texture(doodle_texture_t *texture)
+{
+    NATIVE_LOG("Displaying texture\n");
 }
 
-void native_gui_render_frame(void) {
-    if (!g_is_initialized) return;
 
-    // End the ImGui frame, gather draw data
-    igRender();
 
-    // Clear the screen using our clear color
-    float clear_color[4] = {
-        g_native_gui.clear_color.x * g_native_gui.clear_color.w,
-        g_native_gui.clear_color.y * g_native_gui.clear_color.w,
-        g_native_gui.clear_color.z * g_native_gui.clear_color.w,
-        g_native_gui.clear_color.w};
-
-    ID3D11DeviceContext_OMSetRenderTargets(
-        g_native_gui.d3d_context,
-        1,
-        &g_native_gui.main_render_target_view,
-        NULL);
-    ID3D11DeviceContext_ClearRenderTargetView(
-        g_native_gui.d3d_context,
-        g_native_gui.main_render_target_view,
-        clear_color);
-
-    // Render the ImGui draw data
-    ImGui_ImplDX11_RenderDrawData(igGetDrawData());
-
-    // (Optional) For multi-viewport support:
-#ifdef IMGUI_HAS_DOCK
-    ImGuiIO* io = igGetIO();
-    if (io->ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
-        igUpdatePlatformWindows();
-        igRenderPlatformWindowsDefault(NULL, NULL);
-    }
-#endif
-
-    // Present with vsync
-    IDXGISwapChain_Present(g_native_gui.d3d_swap_chain, 1, 0);
-}
 
 //--------------------------------------------------------------------------------------
 // GLFW callback for window resizing

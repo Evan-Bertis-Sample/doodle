@@ -20,6 +20,8 @@ extern "C" {
 typedef void* HWND; // Stub if not on Windows
 #endif
 
+#include <doodle/core/modules/doodle_renderer.h>
+
 // Forward declare D3D resources to avoid forcing all includes here
 struct ID3D11Device;
 struct ID3D11DeviceContext;
@@ -61,10 +63,7 @@ bool native_gui_initialize(const char* title, int width, int height);
  */
 void native_gui_shutdown(void);
 
-/**
- * @brief Call once per frame before building your ImGui UI.
- */
-void native_gui_new_frame(void);
+void native_gui_display_texture(doodle_texture_t *texture);
 
 /**
  * @brief Call once per frame after building your ImGui UI to render and present.
