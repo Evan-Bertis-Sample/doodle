@@ -1,7 +1,19 @@
 #include <doodle/platforms/native/native_gui.h>
 
 // Include the Direct3D and related headers as needed.
+#define D3D11_NO_HELPERS
+#define CINTERFACE
+#define COBJMACROS
+#define WIN32_LEAN_AND_MEAN
+#include <GLFW/glfw3.h>
+#include <d3d11.h>
+#define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
+#include <stdio.h>
+#ifdef _MSC_VER
+#include <windows.h>
+#endif
+
 #include <d3d11.h>
 #include <stdio.h>
 #include <string.h>
