@@ -147,6 +147,97 @@ void native_gui_shutdown(void) {
 void native_gui_display_texture(doodle_texture_t *texture)
 {
     NATIVE_LOG("Displaying texture\n");
+
+#ifdef _WIN32
+    // If we don't have a valid device/context, do nothing
+    if (!g_native_gui.d3d_device || !g_native_gui.d3d_context || !texture || !texture->pixels)
+        return;
+
+    // 1. Create a D3D11 texture description
+    D3D11_TEXTURE2D_DESC texDesc;
+    ZeroMemory(&texDesc, sizeof(texDesc));
+    texDesc.Width              = texture->width;
+    texDesc.Height             = texture->height;
+    texDesc.MipLevels          = 1;
+    texDesc.ArraySize          = 1;
+    texDesc.Format             = DXGI_FORMAT_R8G8B8A8_UNORM; // assumes doodle_texture is RGBA8
+    texDesc.SampleDesc.Count   = 1;
+    texDesc.Usage              = D3D11_USAGE_DYNAMIC; // so we can write to it each time
+    texDesc.BindFlags          = D3D11_BIND_SHADER_RESOURCE;
+    texDesc.CPUAccessFlags     = D3D11_CPU_ACCESS_WRITE;
+
+    // 2. Create the ID3D11Texture2D
+    ID3D11Texture2D* pTexture2D = NULL;
+    HRESULT hr = ID3D11Device_CreateTexture2D(g_native_gui.d3d_device, &texDesc, NULL, &pTexture2D);
+    if (FAILED(hr) || !pTexture2D)
+    {
+        NATIVE_LOG("Failed to create ID3D11Texture2D from doodle_texture.\n");
+        return;
+    }
+
+    // 3. Map the texture and copy the CPU pixels
+    D3D11_MAPPED_SUBRESOURCE mapped;
+    hr = ID3D11DeviceContext_Map(g_native_gui.d3d_context, (ID3D11Resource*)pTexture2D, 0,
+                                 D3D11_MAP_WRITE_DISCARD, 0, &mapped);
+    if (SUCCEEDED(hr))
+    {
+        // Copy row by row into the mapped subresource
+        // Each pixel is 4 bytes (RGBA), each row in GPU texture is mapped.RowPitch
+        uint8_t* dstData = (uint8_t*)mapped.pData;
+        uint8_t* srcData = (uint8_t*)texture->pixels; // doodle_texture->pixels is an array of (r,g,b,a)
+
+        for (uint32_t y = 0; y < texture->height; ++y)
+        {
+            memcpy(dstData + y * mapped.RowPitch,
+                   srcData + y * (texture->width * 4),
+                   texture->width * 4);
+        }
+
+        ID3D11DeviceContext_Unmap(g_native_gui.d3d_context, (ID3D11Resource*)pTexture2D, 0);
+    }
+    else
+    {
+        NATIVE_LOG("Failed to map ID3D11Texture2D.\n");
+        ID3D11Texture2D_Release(pTexture2D);
+        return;
+    }
+
+    // 4. Create a shader resource view for ImGui to use
+    ID3D11ShaderResourceView* pSRV = NULL;
+    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+    ZeroMemory(&srvDesc, sizeof(srvDesc));
+    srvDesc.Format                    = texDesc.Format;
+    srvDesc.ViewDimension            = D3D11_SRV_DIMENSION_TEXTURE2D;
+    srvDesc.Texture2D.MostDetailedMip = 0;
+    srvDesc.Texture2D.MipLevels       = 1;
+
+    hr = ID3D11Device_CreateShaderResourceView(
+         g_native_gui.d3d_device, (ID3D11Resource*)pTexture2D, &srvDesc, &pSRV);
+
+    if (FAILED(hr) || !pSRV)
+    {
+        NATIVE_LOG("Failed to create SRV.\n");
+        ID3D11Texture2D_Release(pTexture2D);
+        return;
+    }
+
+    // 5. Use ImGui to display the texture. 
+    //    In cimgui, igImage expects an ImTextureID, 
+    //    which we pass the SRV pointer as (void*) or (ImTextureID).
+    ImVec2 imageSize = (ImVec2){(float)texture->width, (float)texture->height};
+
+    // Typically you wrap this in an ImGui window or just directly call igImage.
+    // For example:
+    // igBegin("Texture Window", NULL, 0);
+    igImage((ImTextureID)pSRV, imageSize, (ImVec2){0, 0}, (ImVec2){1, 1},
+            (ImVec4){1, 1, 1, 1}, (ImVec4){0, 0, 0, 0});
+    // igEnd();
+
+    // 6. Release the SRV and texture (since we re-create them each call)
+    ID3D11ShaderResourceView_Release(pSRV);
+    ID3D11Texture2D_Release(pTexture2D);
+
+#endif // _WIN32
 }
 
 
