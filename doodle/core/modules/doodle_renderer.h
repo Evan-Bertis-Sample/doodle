@@ -72,6 +72,7 @@ typedef struct doodle_module_renderer {
     void (*draw_circle)(struct doodle_module_renderer *renderer, uint32_t x, uint32_t y, uint32_t radius, doodle_color_t color);
     void (*draw_text)(struct doodle_module_renderer *renderer, uint32_t x, uint32_t y, const char *text, doodle_color_t color);
     void (*blit)(struct doodle_module_renderer *renderer, doodle_rect_t rect);
+    void (*blit_screen)(struct doodle_module_renderer *renderer);
     void (*blit_texture)(struct doodle_module_renderer *renderer, doodle_texture_t *texture, doodle_rect_t rect);
 
 } doodle_module_renderer_t;

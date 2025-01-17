@@ -147,22 +147,35 @@ static void __native_renderer_blit(doodle_module_renderer_t *renderer, doodle_re
 
         doodle_rect_t corner_rect = doodle_rect_convert_to_corner(dirty_rect);
 
-        for (uint32_t row = 0; row < corner_rect.height; row++)
-        {
+        for (uint32_t row = 0; row < corner_rect.height; row++) {
             uint32_t idx = doodle_texture_get_idx(&ctx->onscreen, dirty_rect.x, dirty_rect.y + row);
             memcpy(
                 ctx->onscreen.pixels + idx,
                 ctx->offscreen.pixels + idx,
-                dirty_rect.width
-            );
+                dirty_rect.width);
         }
 
         native_gui_display_texture(&ctx->onscreen);
-
     }
 
-
     ctx->dirty_count = 0;  // Reset the dirty region count
+}
+
+static void __native_renderer_blit_screen(doodle_module_renderer_t *renderer) {
+    renderer->blit(
+        renderer,
+        (doodle_rect_t){
+            .mode = DOODLE_RECTMODE_CORNER,
+            .x = 0,
+            .y = 0,
+            .width = renderer->config.width,
+            .height = renderer->config.height,
+        });
+}
+
+static void __native_renderer_blit_texture(doodle_module_renderer_t *renderer, doodle_texture_t *texture, doodle_rect_t rect) {
+    native_renderer_ctx_t *ctx = (native_renderer_ctx_t *)renderer->module.context;
+    NATIVE_LOG_ERROR("Blit texture not implemented\n");
 }
 
 //--------------------------------------------------------------------------------------
@@ -245,6 +258,8 @@ doodle_module_renderer_t *native_renderer_create(doodle_module_renderer_config_t
         .draw_circle = __native_renderer_draw_circle,
         .draw_text = __native_renderer_draw_text,
         .blit = __native_renderer_blit,
+        .blit_screen = __native_renderer_blit_screen,
+        .blit_texture = __native_renderer_blit_texture,
     };
 
     NATIVE_LOG("Native renderer created\n");
