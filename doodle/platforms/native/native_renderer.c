@@ -227,9 +227,13 @@ doodle_module_renderer_t *native_renderer_create(doodle_module_renderer_config_t
         return NULL;
     }
 
-    // Initialize the offscreen buffer
-    module_ctx->offscreen = doodle_texture_create(config.width, config.height);
-    module_ctx->onscreen = doodle_texture_create(config.width, config.height);
+    *module_ctx = (native_renderer_ctx_t){
+        .config = config,
+        .offscreen = doodle_texture_create(config.width, config.height),
+        .onscreen = doodle_texture_create(config.width, config.height),
+        .dirty_regions = {0},
+        .dirty_count = 0,
+    };
 
     if (!module_ctx->offscreen.pixels || !module_ctx->onscreen.pixels) {
         NATIVE_FATAL_ERROR("Failed to allocate memory for offscreen buffer\n");
